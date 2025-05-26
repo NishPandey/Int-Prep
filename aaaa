@@ -1,0 +1,188 @@
+											Set 1 
+
+custom annotation = @retention
+
+@Bean (@qualifier,@primary)
+
+caching(escache, reddish, haaslecast) =  @cacheable, @cachboot, @cachevict
+
+interservice communication in microservice -> 
+1. sync(REst API (http(direct communication)), finclient (complex(multiple service intercommunication)), webclient(reactive programming(high concurrent application(share market data))) ) 
+and 2. async -> 1. message broker(rabbit mq, kafka)- calling method does not wait for response and it just move after creating/producing data ; and 2. messages and events
+
+configuration class for bean; or application.prop/YML for data source; or for server/maven we have pom.xml file => used for customization of annotation
+
+scope => singleton(default scope( single instatnce for entire spring container)), prototype(new instance of bean is created as per request), request(whatever bean is created during request is available till the request lifecycle of request), session(it is available untill the session expires), websocket(its for websocket session)
+
+custom scope ?
+
+@springbootapplication -> covers 3 annotation(@configuration,@enableautoconfiguration,@componentscan)
+@enableautoconfiguration -> automatically configure spring beans based on class path dependencies to load them in container
+
+service registory -> it's a database in microservices that  holds the location of all services instances(services to register by providing ip over there and discover by itself without hardcoding); if service instance crash/shutdown then its automatically removed from the registory.
+service discovery -> 
+
+SAGA design pattern in microservices -> sequence of local transaction in multiple services, each transaction updates the state within its service; if  any step fails then compenseting transaction is executed to undo the previous step.
+{SAGA types ->1. coreography 2. orchestation(centrally managed)}
+
+Idempotency -> multiple times we do get, put, delete it doesn't create problem(means these are idompotent) but for post multiple entries are created in database
+
+object class is the super class of all java classes and its present in java.lang package; methods -> equals, hashcode, clone, noify, noifyall, tostring, wait
+
+OOPS concept -> inheritance, polymorphism, encapsulaion, abstraction
+
+a single class 'Employee' behind the scene follows inheritance as by default, object class is the implementation class; also it follows polymorphism(overloading and overriding(hashcode, equals))
+
+ArrayList -> frequently data access is needed; uses dynamic array
+LinkedList -> frequently insertion/deletion(modify) at middle or anyplace ; it's doubly linkedlist benefit
+
+hashmap -> not thread safe, allows null keys and null values, performance is faster then chashmap
+concurrent hashmap -> thread safe, not allows null key and null values, performance is slow then hashmap
+
+remove duplicate from list and preserve its order -> 1. arraylist(items) 2. iterator(arraylist(set.add.arraylist(items)));[linkedhashset(items)]
+
+vector -> introduced in java version 1.2, it's synchronized, it came before arraylist, it's threadsafe, it's less efficient, less methods present, allows 1 null value and 1 null key
+
+volatile keyword -> value of a variable will be modified by different threads, used in multithreading env. ,it ensures value visibility across the thread, Problem -> it doesn't provide automicity of read and write operation, it shows most recent value, to maintain automicity we need to use "automic" keyword.
+
+Transient -> field should not be serialized
+
+Sring builder -> mutable, not synchronized, not thread safe
+String buffer -> mutable, synchronized, thread safe
+
+= = 	-> compares two object and check whether they point to same memory location
+.equals -> compares only values
+
+create indexes in SQL -> it's a db object helps in retrieving records very quickly and more efficiently, indexing is applied to column on both table and views(declare a column as an index within a  table/view); Query => create index index_name ON table_name column_name
+
+indexing working internally -> as query runs we can see in table index is generated , some data strucure/algorithm like B tree, hash table is used; based on algo used it scannes only few rows of tables
+
+				
+				
+							SET 2
+
+Java 8 :
+- We have interface A and interface B both have Same default method;
+A class implement both interfaces.
+We want to print value which is in default(common) method?
+Diamond problem -> compiler will throw compile time error and will ask forcefully override method and in that method say which interface method we want to call like interfaceA.super().method_name(); 
+
+-private method in java interface?
+support mostly logic of static and default method in java8.
+private method came in java9
+If logic is bigger in static/default then we want to separate/private the logic then we use private method in interface and that is not accessible outside interface and only that interface methods can use it so we use private method for code reuability within interface, more readable, maintainable, avoid duplication in logics
+
+default method? -> backward compatibility for older code, And don't want implementing classes to override default method as they can overrirde or can enhance the logic
+static method? -> class which are implementing static interface that cannot be overriden by implemening classess; we can call this static method by interface_name.method_name
+
+variable argument -> method to accept any number of parameter of same type then we use variable argument
+syntax -> parameter type ...; 
+
+psvm(String[]) -> here can we replace string array parameter in main method with variable argument.?
+Yes we can replace but this is not recomended way to use
+
+class Test {
+static method()
+test a = null;
+a.method()
+} output = ?  yes it will working
+
+equals and hashcode contract?
+whenever we override equals then we should override hashcode as well from object class
+
+only overriding equals is not enough - explain
+hashcode of object class is generated behind the scene and is used for comparison; which can have same/different values/objects so it fails to compare the equals values
+
+base class & abstract class?
+create objects, have methods, can be inherited, may or may not be extended by other class
+abstract class cannot be instentiated directly, may contain or not contain abstract method
+
+marker interface?
+kind of empty interface - it does not have any methods, its kind of marking/tagging a class eg - serlizable(convert class object to byte stream), clonnable(alowed to clone but if cloneable is not implemented then thorws clone not supported exception)
+
+custom marker interface- how to create?
+define empty interface(marker interface) then have 1 class which will implement marker interface then 1 class to check if a class is implementing marker interface.
+
+can we write functional interface without abstract method?
+No, coz @functional interface must have exactly 1 abstract method, coz this method only use lambda expression and method reference
+
+Treeset having 2 below values
+1	adding null, 
+2  adding object abc
+Now print output?
+runtime exception -> coz we added null as null values are not allowed in treeset.
+coz it uses comparator internally and which has compareto() method so null compare to any object will throw nullpointer exception at runtime.
+
+finally block will execute even if we write return statement as "system.exit()" at either in try or catch block.
+
+different components of microservices?
+service discovery
+API gateway
+load balancer
+service registory
+AOP
+circuit brakers
+Explanation- As soon as any request is made it goes to API gateway there the load balancer will be there which will root all the request to different instances of microservices,  so through API gateway it goes to service discovery(eureka) and it roots the traffic to different instances, url of this instances is dynamically generated
+
+circuit braker pattern?
+its used in microservice communication. if any microservice is down and is not able to communicate with other microservice so in this case circuit is broken so we use historic and using historic we write fallback method for microservices which is down to give service/reponse to other microservices
+
+fault isolation
+its a designed principal in a distributed system and software architecture that focuses on limiting the impact of failures within a system. so this insures the failure in one component does not cause cascading failure in other parts of the system. the main goal of this is to contain the failure within the faulty component and prevent it from the malfunctioning of entire system.
+
+different ways to create spring boot application
+using spring boot initializer (spring.io) website here we go and add all objects of dependency and it will generate project for us then we import that for our ide --- best way
+using ide - sts, intellige ide
+using command line interface
+
+spring boot actuator and its advantages-
+it's a module that provids production ready features so that we can monitor the health and env checks, etc . it provides various end points like - info, health, matrix, etc which is used to check spring boot health applications
+
+
+
+
+
+heartbeat
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+loadbalancer
+sync and async service/API call
+service mapping (1 to 1 call)
+edureka server
+profile creation
+api gateway
+method reference
+cache
+session
+
+
+
