@@ -172,6 +172,19 @@ heartbeat
 
 
 
+java 17 features 
+annotations
+authenticate
+Authorization
+hashing
+session 
+loggers
+threads
+exception 
+interfaces
+kafka or docker basics
+
+
 
 	
 loadbalancer
@@ -184,5 +197,5 @@ method reference
 cache
 session
 
-
+h
 
