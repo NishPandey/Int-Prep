@@ -1,5 +1,28 @@
 											Set 1 
 
+SQL Test
+
+--- leave 8 record and print the 9th top record
+select distinct amount, * from yono_db.FT_SCHEDULE_PAYMENTS order by amount desc limit 2 offset 8
+
+-- find duplicate record in table
+select inb_user_id, Count(*) from yono_db.ft_schedule_payments group by inb_user_id having count(*) > 1 order by count asc;
+
+--same name and amount(emp with same salary in same dept)
+select  e1.ben_name, e1.inb_user_id, e1.amount from yono_db.ft_schedule_payments e1 join yono_db.ft_schedule_payments e2 ON e1.amount = e2.amount  and e1.inb_user_id = e2.inb_user_id
+where e1.inb_user_id = e2.inb_user_id
+
+--find ben name whose sidate is having same month and status is created
+select e1.ben_name as employee, e1.sidate, e2.ben_name as Manager, e2.sidate from yono_db.ft_schedule_payments e1 join yono_db.ft_schedule_payments e2 on e1.status = e2.status
+where month(e1.sidate) = month(e2.sidate);
+
+-- get cumulative amountof each sidate
+select ben_name, sidate, amount, sum(amount) over  (partition by sidate order by amount desc) as cumulative_salary from  yono_db.ft_schedule_payments 
+
+
+
+JAVA & SPRING BOOT
+
 custom annotation = @retention
 
 @Bean (@qualifier,@primary)
@@ -197,5 +220,5 @@ method reference
 cache
 session
 
-h
+
 
