@@ -1,0 +1,39 @@
+DELETE(DML)
+
+Used to delete the tuples(row) of the table and have facility to DELETE ONE OR MULTIPLE ROW USING WHERE CLAUSE
+
+delete EX ->
+
+ delete from emp ; it will delete all the row of table
+
+ delete from emp where id = 2; it will delete one row
+
+----------------------Drop(DDL)-------------------
+
+This command will delete the whole structure of table with data so that's why it is very important or crucial command and the access is to this command is only to database administrator (DBA)
+
+dropEX -> DROP EMP1;
+
+it will vanish whole table with structure
+
+-------------------TRUNCATE(DDL)----------------
+
+Used to delete all rows (tuple) of the table. truncate EX -> TRUNCATE EMP1;
+
+----------------------QUESTIONS-------------------
+
+Question 1: IF WE CAN DELETE ALL ROWS FROM BOTH 'DELETE' COMMAND AND 'TRUNCATE' COMMAND THEN WHAT IS THE DIFFERENCE
+
+DELETE AND TRUNCATE DIFFERENCE
+
+DELETE command is DML command and TRUNCATE is DDL
+TRUNCTE command will delete all rows because we can not use where clause with truncate but WHERE clause can be applied to DELETE command and can delete one or more rows through where condition
+Question 2: WHY TRUNCATE IS DDL ALTHOUGH IT IS WORKING ON DATA AND DELETE IS DML IT IS ALSO WORKING ON DATA?
+
+ANSWER:
+
+ When TRUNCATE Command deletes all the row then we can never ROLLBACK our deleted data because in truncate COMMIT is called implicitly
+
+ But in the case of delete the log(backend file) is created from where you can get your data ROLLBACK if deleted by mistake
+
+ REMEMBER: In DELETE case ROLLBACK can be done only before the COMMIT
