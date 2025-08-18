@@ -1,0 +1,40 @@
+package com.inm.sbi.lotus.cloudant.fundtransfer.Streams;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+public class convertInputArrayToStreams {
+
+	public static void main(String[] args) {
+		
+		System.out.println("Primitive Array to stream ");
+		
+		//primitive data type
+		int[] primitiveArray = {1,4,6,3};
+
+		//for primitive array we use Arrays.stream()
+		final IntStream primitiveStream = Arrays.stream(primitiveArray);
+		primitiveStream.forEach(System.out::println);
+		
+		System.out.println("wrapper/object Array to stream ");
+		
+		
+		//wrapper class data type
+		Integer[] objectArray = {4,2,6,9};
+		
+		//for array of objects we use stream.of()
+		final Stream<Integer> objectStream = Stream.of(objectArray);
+		objectStream.forEach(System.out::println);
+		
+		
+		System.out.println("collection Array to stream ");
+		
+		
+		//for collection to convert in stream  we directly use stream
+		List<Integer> integerList = Arrays.asList(1,4,6,7,8,9);
+		integerList.stream().forEach(System.out::println);
+		
+	}
+}
