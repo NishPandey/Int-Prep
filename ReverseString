@@ -1,0 +1,26 @@
+import java.util.Arrays;
+import java.util.stream.Stream;
+import java.util.stream.Collectors;
+
+public class ReverseString {
+
+	 static String str = "Please reverse this";
+	public static void main(String[] args) {
+
+		System.out.println(reverse(str));
+
+	}
+	
+	public static String reverse(String str1) {
+		
+		System.out.println("Using Stream builder => "+new StringBuilder(str1).reverse().toString());
+		
+		System.out.println("using stream reduce => "+Stream.of(str1.split("")).reduce("",(charr1, charr2) -> charr2 + charr1));
+
+		System.out.println("This is using array => "+Arrays.asList("Geeks", "for", "Geeks").stream().map(wrd -> new StringBuilder(wrd).reverse().toString()).collect(Collectors.toList()));
+	
+        System.out.println("By using map joining => "+Arrays.asList("Geeks", "for", "Geeks").stream().map(s -> new StringBuilder(s).reverse().toString()).collect(Collectors.joining(", ")));
+	
+	return str1;
+	}
+}
