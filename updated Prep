@@ -352,5 +352,143 @@ cloud - aws, azure
 container - docker, kubernetes
 messaging - kafka
 
+Join(), join query/criteria
+In code we have written two times left join in 1 query->
+from yono_db.REKYC_CUSTOMER_INFO info " + 
+			"left join yono_db.REKYC_CUSTOMER_ADDRESS adr on info.YONO_REF_NUMBER=adr.YONO_REF_NUMBER " +	
+			"left join yono_db.REKYC_VCALL_DETAILS vcall on info.YONO_REF_NUMBER=vcall.YONO_REF_NUMBER " + 
+			"where date(info.UPDATEDDATETIME) = :requestDate or date(info.CREATEDDATETIME) = :requestDate ";
+			
+			
+			
+
+
+Predicate => it returns true or false.
+Annonymous inner class
+Map reduce => 
+Parralel stream
+
+
+
+******************************************************************************************************************************
+**********************************Hibernate**********************************************************
+
+JPA and Hibernate->
+
+ORM(Object Relational Mapping) is a tool => mapping java objects to the database tables
+
+JDBC vs JPA vs Hibernate ::
+JDBC -> Direct database interaction using SQL
+JPA -> its a API specification for ORM(used by Hibernate, EclipseLink, etc); now it is renamed as Jakarta Persistance API
+Hibernate -> Popular JPA implementation with advanced features; used in caching, dialect support, etc.
+
+Hibernate Architecture::
+Session factory-> 
+	we create session factory once in a application as it is heavy object and can be used for whole application.
+	session factory is heavy object and it is singleton in nature and used for creating sessions in a application.
+Session->
+	session interacts with db and session is created from session factory.
+	it is light weight and short lived so it can be created and used multiple times.
+Transaction->
+	with the help of session we can open transaction and connect and perform - commit,rollback.
+	we close the transaction after performing the operation either by closing the session or by commiting the transaction.
+Query & Criteria API->
+	These are used to fetch data either through complex or normal query or either by using join or projections
+Hibernate config file->
+	Here we write configuration of database, hibernate, class that are going to be managed by hibernate.
+	This file is sent to hibernate to read and perform operations
+
+Hibernate Workflow::
+	1.Load Hibernate configuration file
+	2.Create SessionFactory and this session factory should be singleton and should be created only once.
+	3.Open a Session
+	4.Begin Transaction
+	5.Perform CRUD operations
+	6.Commit Transaction
+	7.Close Session
+	No need to close SessionFactoryactory coz it's a singleton object and can used later on as well
+	
+Note - for creating sessioin factory we are using singleton design pattern
+
+We have used rlationship of::
+	@OneToOne(mappedBy = "loanAgainstMFEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true):-
+			mappedBy => It will handle the mapping with field "loanAgainstMFEntity" without creating a new column/table for this
+			fetch => Used to fetch by type eager means direct/automatically we get the result and type lazy(it is of default type) means on demand means we have to call get method to get data.
+			cascade => All operations performed on parents will get affected to its child as well
+			orphanRemoval => same operation is performed on child even after we get the updated data from parent
+		@JoinColumn(name = "NRO_ACCOUNT_ID", referencedColumnName = "ID"):-
+			This JoinColumn is used to handle the relationship with column "NRO_ACCOUNT_ID"
+	@one to many
+	@many to one
+
+
+
+try with reource::
+	In this try method resource is passed as an argument in try and the resource automatically gets closed.
+We can get the data from table using::
+	try with resource - used for creating session.
+	1.Relationships - one to one, one to many, many to one, many to many
+	2.HQL query
+	3.Crieria API
+	4.PaginationUsingHQL
+
+
+******************************************************************************************************************************
+********************************** Java Streams**********************************************************
+
+Sttream creates a pipeline for map,filter(intermediate operations), etc
+Stream is lazy coz it works only when terminal operation is performed or means when terminal operations hits the intermediate operations.
+
+
+
+Stream<Integer> vs Intstream
+	???
+
+
+
+
+
+IntStream
+	Stream of primitive integer value.
+	
+
+Stream<Integer>
+	Stream of integer objects.
+
+Note->
+	The list of operations available in IntStream and Stream<Integer> are diffrent.
+	
+	
+	
+System.out::println => It is commonly used with functional interfaces, particularly with the forEach method of collections, to concisely print each element.
+		System is a class
+		Out is a method present in System class of printstream type
+		Print/println/printf is a method present in Printstream class
+	// Using a lambda expression
+        names.forEach(name -> System.out.println(name));
+
+	// Using a method reference to System.out::println
+        names.forEach(System.out::println);
+
+
+
+
+
+
+
+
+
+@Column(name = "BEN_ACCOUNT_NO")
+	@ColumnTransformer(read = "decrypt_char(BEN_ACCOUNT_NO,'" + Utility.ENCRYPTION_KEY + "')", write = "encrypt(?, '"
+			+ Utility.ENCRYPTION_KEY + "')")
+			
+
+
+
+
+
+
+
+
 
 
