@@ -1,0 +1,149 @@
+package com.inm.sbi.lotus.cloudant.fundtransfer.Streams;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.ibm.ws.webservices.xml.wassysapp.systemApp;
+
+public class StreamIntermediateOPerations {
+
+	public static void main(String[] args) {
+		
+		//1. filter.... gate
+		/*
+		 * filter takes predicate as an argument
+		 * predicate-> it is a functional interface
+		 */
+		System.out.println("\n Filter with predicate with lambda expression");
+		
+		List<Integer> li = Arrays.asList(2,3,54,5,6,7,9);
+		li.stream().filter(n -> n%2 == 0).forEach(System.out::println);
+		
+		
+		
+		//2. map.....transformer(a -> A)
+		/*
+		 * take one data and convert in another format
+		 * map uses function as a input to perform its operation
+		 * Function is another functional interface introduce in java 8
+		 */
+		
+		System.out.println("\nMap Convert lis to uppercase");
+		
+		List<String> ls = Arrays.asList("Hey", "nisha", "Pandey");
+		ls.stream().map(name -> name.toUpperCase()).forEach(System.out::println);
+		//using method reference
+		ls.stream().map(String ::toUpperCase).forEach(System.out::println);
+		
+		
+		
+		
+		//reduce.....used to reduce collection to one element
+		/*
+		 * It is a terminal operation of stream coz it returns some result
+		 * The output of reduce will be a single element
+		 * 1st input to reduce is identity from what element it is going to start performing operation
+		 * 2nd input is what operation we are going to perform
+		 */
+		System.out.println("\nReduce Find the sum of element");
+		
+		List<Integer> lir = Arrays.asList(1,4,6,7,8,6,5,7,0);
+		final int sum = lir.stream().reduce(0, (a,b) -> a+b);
+		System.out.println(sum);
+		
+		
+		
+		//3. flatmap.....used when we have complex data structure or list(list within list)
+		/*
+		 * when we have complex data structure then we use flatmap for flatening those data 
+		 * and then we use map to perform operation on each element
+		 */
+ 
+		System.out.println("\nflatmap for complex data structure");
+		
+		List<List<String>> listOfLists = Arrays.asList(
+											Arrays.asList("a","d"),
+											Arrays.asList("r","t"),
+											Arrays.asList("y","J"));
+		//listOfLists.stream().flatMap(list -> Stream).map(String::toUpperCase).forEach(System.out::println);
+		//using method reference
+		listOfLists.stream().flatMap(Collection::stream).map(String::toUpperCase).forEach(System.out::println);
+
+		
+		
+		
+		
+		
+		
+		//4. peak.......
+		/*
+		 * perform few operation on stream but do not modify the stream
+		 * or peek is basically is used to print the element
+		 */
+		
+		System.out.println("\nPeek the element");
+		
+		List<Integer> lipeek = Arrays.asList(5,4,3,5,6,3,7);	
+		lipeek.stream().map(n -> n * n).peek(System.out::println).collect(Collectors.toList());
+		
+		
+		
+		
+		//5. distinct.... filter the duplicate elements and print the unique elements
+		System.out.println("\ndistinct means print unique elements ");
+		
+		List<Integer> lisd = Arrays.asList(2,2,2,4,4,4,4,6,6,6,8);		
+		lisd.stream().distinct().forEach(System.out::println);
+		
+		
+		
+		
+		
+		
+		//6. sorted.....by default it sort element in ascending order(natural order)
+		
+		System.out.println("\nsort element in descending order ");
+		
+		List<Integer> lisort = Arrays.asList(2,5,3,9,6,3,5,2);
+		lisort.stream().sorted().forEach(System.out::println);//ascending order(natural order) by default
+		System.out.println("\n");
+		lisort.stream().sorted(Comparator.reverseOrder()).forEach(System.out::println);//descending order by using comparator
+		
+		System.out.println("sort string based on its size");
+		
+		List<String> listring = Arrays.asList("Natasha","Neha","Hi");
+		
+		listring.stream().sorted(Comparator.comparingInt(String::length)).toList().forEach(System.out::println);//ascending order bydefault
+		listring.stream().sorted(Comparator.comparingInt(String::length).reversed()).toList().forEach(System.out::println);//descending order
+		
+		
+		
+		
+		
+		
+		//7. skip.....used to skip the n elements
+		System.out.println("\nskip first 2 elements in an array");
+		
+		List<Integer> lielm = Arrays.asList(2,5,7,5,1,6);
+		lielm.stream().skip(2).collect(Collectors.toList()).forEach(System.out::println);
+		lielm.stream().skip(4).forEach(System.out::println);
+		
+		
+		
+		
+		
+		//8. limit....opposit to skip
+		System.out.println("\nlimit the element ... means print only first n elements and block other elements");
+		
+		List<Integer> lilimit = Arrays.asList(3,6,4,5,2,1,3,6);
+		lilimit.stream().limit(4).forEach(System.out::println);
+		
+		
+		
+		
+		
+	}
+}
