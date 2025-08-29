@@ -7,55 +7,81 @@ custom annotation = @retention
 caching(escache, reddish, haaslecast) =  @cacheable, @cachboot, @cachevict
 
 interservice communication in microservice -> 
-1. sync(REst API (http(direct communication)), finclient (complex(multiple service intercommunication)), webclient(reactive programming(high concurrent application(share market data))) ) 
-and 2. async -> 1. message broker(rabbit mq, kafka)- calling method does not wait for response and it just move after creating/producing data ; and 2. messages and events
+	1. sync(REst API (http(direct communication)), finclient (complex(multiple service intercommunication)), webclient(reactive programming(high concurrent application(share market data))) ) 
+	2. async -> 1. message broker(rabbit mq, kafka)- calling method does not wait for response and it just move after creating/producing data ; and 2. messages and events
 
 configuration class for bean; or application.prop/YML for data source; or for server/maven we have pom.xml file => used for customization of annotation
 
-scope => singleton(default scope( single instatnce for entire spring container)), prototype(new instance of bean is created as per request), request(whatever bean is created during request is available till the request lifecycle of request), session(it is available untill the session expires), websocket(its for websocket session)
+scope => 
+	1. singleton(default scope( single instatnce for entire spring container)), 
+	2. prototype(new instance of bean is created as per request), 
+	3. request(whatever bean is created during request is available till the request lifecycle of request), 
+	4. session(it is available untill the session expires), 
+	5. websocket(its for websocket session)
 
 custom scope ?
 
 @springbootapplication -> covers 3 annotation(@configuration,@enableautoconfiguration,@componentscan)
 @enableautoconfiguration -> automatically configure spring beans based on class path dependencies to load them in container
 
-service registory -> it's a database in microservices that  holds the location of all services instances(services to register by providing ip over there and discover by itself without hardcoding); if service instance crash/shutdown then its automatically removed from the registory.
+service registory -> 
+	it's a database in microservices that  holds the location of all services instances(services to register by providing ip over there and discover by itself without hardcoding); if service instance crash/shutdown then its automatically removed from the registory.
 service discovery -> 
 
-SAGA design pattern in microservices -> sequence of local transaction in multiple services, each transaction updates the state within its service; if  any step fails then compenseting transaction is executed to undo the previous step.
+SAGA design pattern in microservices -> 
+	sequence of local transaction in multiple services, each transaction updates the state within its service; 
+	if  any step fails then compenseting transaction is executed to undo the previous step.
 {SAGA types ->1. coreography 2. orchestation(centrally managed)}
 
-Idempotency -> multiple times we do get, put, delete it doesn't create problem(means these are idompotent) but for post multiple entries are created in database
+Idempotency -> 
+	multiple times we do get, put, delete it doesn't create problem(means these are idompotent) but for post multiple entries are created in database
 
-object class is the super class of all java classes and its present in java.lang package; methods -> equals, hashcode, clone, noify, noifyall, tostring, wait
+object class is the super class of all java classes and its present in java.lang package; methods -> equals, hashcode, clone, noify, notifyall, tostring, wait
 
-OOPS concept -> inheritance, polymorphism, encapsulaion, abstraction
+OOPS concept -> 
+	inheritance, polymorphism, encapsulaion, abstraction
 
 a single class 'Employee' behind the scene follows inheritance as by default, object class is the implementation class; also it follows polymorphism(overloading and overriding(hashcode, equals))
 
-ArrayList -> frequently data access is needed; uses dynamic array
-LinkedList -> frequently insertion/deletion(modify) at middle or anyplace ; it's doubly linkedlist benefit
+ArrayList -> 
+	frequently data access is needed; uses dynamic array
+LinkedList -> 
+	frequently insertion/deletion(modify) at middle or anyplace ; it's doubly linkedlist benefit
 
-hashmap -> not thread safe, allows null keys and null values, performance is faster then chashmap
-concurrent hashmap -> thread safe, not allows null key and null values, performance is slow then hashmap
+hashmap -> 
+	not thread safe, allows null keys and null values, performance is faster then chashmap
+concurrent hashmap -> 
+	thread safe, not allows null key and null values, performance is slow then hashmap
 
 remove duplicate from list and preserve its order -> 1. arraylist(items) 2. iterator(arraylist(set.add.arraylist(items)));[linkedhashset(items)]
 
-vector -> introduced in java version 1.2, it's synchronized, it came before arraylist, it's threadsafe, it's less efficient, less methods present, allows 1 null value and 1 null key
+vector -> 
+	introduced in java version 1.2, it's synchronized, it came before arraylist, it's threadsafe, it's less efficient, less methods present, allows 1 null value and 1 null key
 
-volatile keyword -> value of a variable will be modified by different threads, used in multithreading env. ,it ensures value visibility across the thread, Problem -> it doesn't provide automicity of read and write operation, it shows most recent value, to maintain automicity we need to use "automic" keyword.
+volatile keyword -> 
+	value of a variable will be modified by different threads, used in multithreading env. ,it ensures value visibility across the thread, Problem -> it doesn't provide automicity of read and write operation, it shows most recent value, to maintain automicity we need to use "automic" keyword.
 
-Transient -> field should not be serialized
+Transient -> 
+	field should not be serialized
 
-Sring builder -> mutable, not synchronized, not thread safe
-String buffer -> mutable, synchronized, thread safe
+Sring builder -> 
+	mutable, not synchronized, not thread safe
+String buffer -> 
+	mutable, synchronized, thread safe
 
-= = 	-> compares two object and check whether they point to same memory location
-.equals -> compares only values
+= =  -> 
+	compares two object and check whether they point to same memory location
+		
+.equals -> 
+	compares only values
 
-create indexes in SQL -> it's a db object helps in retrieving records very quickly and more efficiently, indexing is applied to column on both table and views(declare a column as an index within a  table/view); Query => create index index_name ON table_name column_name
+create indexes in SQL -> 
+	it's a db object helps in retrieving records very quickly and more efficiently, 
+	indexing is applied to column on both table and views(declare a column as an index within a  table/view); 
+	Query eg => create index index_name ON table_name column_name
 
-indexing working internally -> as query runs we can see in table index is generated , some data strucure/algorithm like B tree, hash table is used; based on algo used it scannes only few rows of tables
+indexing working internally -> 
+	as query runs we can see in table index is generated , some data strucure/algorithm like B tree, hash table is used; based on algo used it scannes only few rows of tables
 
 				
 				
@@ -70,12 +96,17 @@ Diamond problem -> compiler will throw compile time error and will ask forcefull
 -private method in java interface?
 support mostly logic of static and default method in java8.
 private method came in java9
-If logic is bigger in static/default then we want to separate/private the logic then we use private method in interface and that is not accessible outside interface and only that interface methods can use it so we use private method for code reuability within interface, more readable, maintainable, avoid duplication in logics
+If logic is bigger in static/default then we want to separate/private the logic then we use private method in interface and that is not accessible outside interface and only that interface methods can use it so we use private method for code reusability within interface, more readable, maintainable, avoid duplication in logics
 
-default method? -> backward compatibility for older code, And don't want implementing classes to override default method as they can overrirde or can enhance the logic
-static method? -> class which are implementing static interface that cannot be overriden by implemening classess; we can call this static method by interface_name.method_name
+default method? -> 
+	backward compatibility for older code, And don't want implementing classes to override default method as they can overrirde or can enhance the logic
+	
+static method? -> 
+	class which are implementing static interface that cannot be overriden by implemening classess; we can call this static method by interface_name.method_name
 
-variable argument -> method to accept any number of parameter of same type then we use variable argument
+variable argument -> 
+	method to accept any number of parameter of same type then we use variable argument
+	
 syntax -> parameter type ...; 
 
 psvm(String[]) -> here can we replace string array parameter in main method with variable argument.?
@@ -139,21 +170,59 @@ spring boot actuator, its end points and its advantages-
 it's a module that provids production ready features so that we can monitor the health and env checks, etc . it provides various end points like - info, health, matrix, etc which is used to check spring boot health applications
 
 Depenency injection, how it works-
-3 types - constructor, setter and field
+3 types - constructor(mostly used), setter and field
 
 Spring bean(entity class)-
-@bean comes in @autowired of @configuration which is for entity class	
+@bean comes in @autowired of @configuration which is for entity class
+To make code more optimize we use database beans to map columns to java objects(Spring boot applications)	
+
+
+Database connection in spring boot-
+Add dependency of mysql in pom.xml file then define datasource- username, password in application.property file
+
 
 Singleton designpattern and database connection relation between them-
 we have used singleton class implementation for database connection as we need it to connect database only once.
+Singleton maintains once instance only.
+
+
+@transactional -
+If some process is hapening and due to some reason the process got corrupted or stopped then we have to rollback the process so for this we use @transactional
+@transactional best way to used is at method level not at class level.
 
 @transactional -> what if we write @transactional at class as well as at method level?
-- class will override the class level annotation but it is not preferred coz it will not behave properly 
-So it is preferred to use at class level coz at class level we will come to know the exact issue and it will be eas to track.
+- method level will override the class level annotation but it is not preferred coz it will not behave properly 
+So it is preferred to use at method level coz at method level we will come to know the exact issue and it will be easy to track.
 @transactional is used for the methods or the process which will be executed at once and while execution if issue occurs or it gets corrupted then it needs to be rolled back.
+
+On remote service failing how you handle rollback transactional-
+Compensation transaction/distributed transaction pattern like SAGA. so we could implement SAGA Pattern here.
+
+Notification system-
+text notification through ....
+
+JAVA Email-
+3rd party service we hhave used i.e web....
+
+Deployment in web application-
+We did using AWS -
+clone repo > do code change > merge code > conflict resolve manually by using head and arrows > push code to pipeline > Pipeline deploys the code
+Steps in pipeline -
+build > create image >.....
+
+How Springboot simplifies the web development -
+.Used to reduce boiler plate code.
+.Annotations make it easier like - autowired, springbootapplication, actuators(health maintain), swagger(byforget API), more easier to maintain a web application.
+
 
 Servers that springboot provides inbuilt-
 tomcat(default), jetty, Undertow
+We can exclude default server by excluding it from the pom.xml file.
+
+Tools used for database migration -
+flyway/liquibase
+Springboot provides built in database migration tools like flyway/liquibase
+
 
 Spring boot data jpa advantages over standard jpa -
 
@@ -313,7 +382,6 @@ SAGA pattern is used for transactional condition for rollback.
 @SuppressWarnings
 @ConditionalOnExpression
 (Exception handling and its annotation)
-@PostConstruct
 @JsonProperty
 eg ->
  public class Product {
@@ -351,7 +419,6 @@ session
 cloud - aws, azure
 container - docker, kubernetes
 messaging - kafka
-
 Join(), join query/criteria
 In code we have written two times left join in 1 query->
 from yono_db.REKYC_CUSTOMER_INFO info " + 
@@ -441,6 +508,261 @@ Stream is lazy coz it works only when terminal operation is performed or means w
 
 
 
+
+
+
+
+
+
+
+
+******************************************************************************************************************************
+********************************** Java 8 features **********************************************************
+
+
+
+
+
+
+
+
+
+
+
+
+******************************************************************************************************************************
+********************************** Java 17 features **********************************************************
+Sealed Class
+	for providing restrictions on class inheritance we use sealed keyword and the class which can extend them are written in permis {eg: Sealed class A permits B, C }
+	the class which extends sealed class needs to be declared as final or sealed or non sealed {eg: non sealed class B extends A } here non sealed means other class(class D ) can extend class B
+	Note:: Sealed interfaces implementing interfaces need to use key word sealed or non sealedbecause final keyword is not allowed for interfaces.
+	
+
+
+
+Parallel stream.... In parallel it will process the elements.
+Methods in parallel stream - 
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+******************************************************************************************************************************
+********************************** Java 21 features(10) **********************************************************
+Sring Templates
+
+Unnamed Patterns and Variables
+
+Unnamed Classes and Instance Method
+
+Sequenced Collection Interface
+
+Record Patterns
+
+Pattern in switch
+
+Virtual Threads
+	Number of thread which you can create depends on your CPU memory is called virtual Threads.
+	Virtual Thread is not tied to your os thread or not tied to only one OS Thread.
+	Virtual Threads can be used when we need high throughput concurrent Applications.
+	Virtual thread do not run code faster then platform thread , it only gives high throughput due to which it can be used.
+
+
+Sequenced collection:
+	 3 new interfaces added in collection in java 21 -> sequenced set, sequenced map, sequenced collection.
+	 We can't remember  all collections method to get first and last element of list, queue, etc as they use different methods.
+	 Sequenced collections brings uniformaty by adding methods -> addFirst(), addLast(). removeFirst(), removeLast(), reverse(); map.firstEntry(), map.lasttEntry, map.reverse(), map.sequencedKeySet(), etc{for map} to all collections(list, queue, map, etc)
+	 
+			
+
+
+
+
+
+
+
+
+
+
+
+******************************************************************************************************************************
+********************************** Java 24 features **********************************************************
+1. Performance & Memory Management Enhancements
+	1. Generational Shenanoah (Experimental)
+				Related to GC
+	2. Quantum-Resistant Cryptography
+	3. Modernizing Java APIs
+			1. Ahead of time class loading & Linking
+			2. Class File API
+			3. Stream Gatheres
+			
+	4. JVM Changes
+			1. Compact Object Headers(Experimental)
+			2. Restrict JNI
+			3. Disable Security Manager
+			
+	5. Language & Syntax Enhancements
+			1. Primitive Types in instanceof & switch
+			2. Scoped Values(Fourth Preview)
+			3. Flexible Constructor Bodies
+			4. Module Import Declarations(Second Preview)
+			5. Linking Run-Time Images without JMODS
+			
+	6. Structured Concurrency & Threading
+			1. Structured Concurrency
+			
+	7. Deprecations & Removals
+			1. Remove windows 32-bit x86 Support
+			2. Deprecate 32-bit x86 Port
+			
+		
+			
+	
+
+
+
+
+
+
+
+
+Controller vs restController:
+Feature  				@Controller     															@RestController
+Primary Use			Traditional web applications with view rendering (MVC)							RESTful web services returning data (APIs)
+View Resolution		Supported; returns view names													Not supported; returns data directly
+@ResponseBody		Required on methods to return data directly										Implicitly included; not required on methods
+Return Type			Typically view names or ModelAndView											Typically data objects (e.g., POJOs) for serialization
+
+
+
+
+@ControllerAdvice 	(Used in @ExceptionHandler):
+		* Used for traditional Spring MVC applications where you are primarily returning views, and explicitly add @ResponseBody if you need to return data in specific exception handling scenarios.
+
+
+		
+@RestControllerAdvice  (Used in @ExceptionHandler):
+		* Used for Spring RESTful services where the primary goal is to return data, as it implicitly handles the conversion of return values to the response body.
+
+
+
+@RequestMapping:
+		* It connects incoming HTTP requests to the appropriate Java methods that will handle those requests.
+		* It can handle various HTTP methods (GET, POST, PUT, DELETE, etc.) by specifying the method attribute, for example, @RequestMapping(value = "/path", method = RequestMethod.POST)
+		* It can be applied on 2 types:
+				1.Class Level: When applied to a controller class, it defines a base URI for all methods within that controller. This helps in organizing endpoints and avoiding repetition.
+				2.Method Level: When applied to a specific method within a controller, it defines the specific URI for that individual endpoint.
+		* HTTP Method Specification: 
+					It allows for the specification of the HTTP method (e.g., GET, POST, PUT, DELETE, PATCH) that a particular method should handle. If no method is specified, it defaults to GET.
+		* Dynamic URLs: 
+					It supports the use of placeholders (e.g., /{id}) in the URL path, enabling the creation of dynamic endpoints that can handle varying input values.
+		* Content Type Handling: 
+					It can specify the produces and consumes attributes to define the media types (e.g., application/json, application/xml) that the method can produce or consume, respectively.
+		* Alternatives: 
+					While @RequestMapping is versatile, Spring 4.3 and later versions introduced more specific, method-level shortcut annotations like @GetMapping, @PostMapping, @PutMapping, @DeleteMapping, and @PatchMapping for 
+						improved readability and conciseness. These are often preferred for their clarity.
+
+
+
+@path:
+		* In Spring Boot, the term "@path" most commonly refers to the use of @PathVariable and the context path of the application.
+		
+
+@pathvariable (Spring MVC):
+		* This annotation is used to extract values from the URI path and bind them to method parameters.
+		* @PathVariable relies on @RequestMapping to define the URI template from which it extracts values.
+		* @PathVariable is applied to method parameters.
+		* eg- In /users/{id}, id would be a @PathVariable representing a specific user's identifier.
+
+
+		
+@requestparam (Spring MVC):
+		* Extracts values from the query parameters of a URL. These appear after a question mark (?) in the URL as key-value pairs.
+		* Primarily used for optional parameters, filtering, sorting, or pagination. It provides additional, often optional, details about how to retrieve or process a resource
+		* eg- In /products?category=electronics&sort=price, category and sort would be @RequestParams
+		
+
+@PathVariable vs @RequestParam:	
+Feature					@PathVariable											@RequestParam
+Data Location			URI Path												Query String
+Purpose					Resource identification, mandatory values				Filtering, sorting, optional parameters
+URL Structure			Part of the path (e.g., /users/{id})					Key-value pairs after ? (e.g., /users?name=John)
+Requirement				Typically required for resource identification			Can be optional, often used with default values
+Used					When parameters are mandatory							When parameters are not mandatory	
+
+
+@queryparam (JAX-RS/Jersey):
+		* Extracts values from the query parameters of the URL.
+		* Eg - In /products?category=electronics&limit=10, category and limit are query parameters.
+
+
+
+
+		
+@pathparam:
+		* It is part of the JAX-RS specification for Java/Jakarta EE.
+		* It is used to extract values directly from the URL path segments.
+		* extracts from the path segments (e.g., /resource/{id})
+		
+
+@RequestBody:
+		* @RequestBody annotation maps the HttpRequest body to a transfer or domain object, enabling automatic deserialization
+		* Commonly used with requests where the payload is in structured formats like JSON or XML.
+
+@ResponseBody:
+		* It is typically used with GET methods to write the response body content.
+
+Difference between @RequestBody and @ResponseBody
+Paramaters			@RequestBody														@ResponseBody
+Purpose			Applicable for the incoming request data.								Applicable for the outgoing response data.
+Method body		Used with POST, PUT, PATCH methods to read the request body.			Used with GET methods to write the response body.
+Return value	Typically void or a simple type											Typically, a complex object representing the response data
+Object			The deserialized object is passed as a method parameter.				The serialized object is returned from the method.
+Payloads		Required to read JSON/XML request payloads.								Required to write JSON/XML response payloads.		
+
+
+@ModelAttribute:
+		* This annotation in Spring MVC serves to bind a method parameter or method return value to a named model attribute, which is then exposed to a web view. It can be used in two primary ways:
+				1.On a method parameter: @PostMapping("/submitForm")
+    public String processForm(@ModelAttribute("userForm") User user) {}
+				2.On a method level:  @ModelAttribute("commonData")
+    public String getCommonData() {}
+
+
+
+
+@CrossOrigin:
+		* Cross-Origin Resource Sharing (CORS)
+		* This annotation allows developers to easily manage cross-origin requests for specific handler classes or methods
+		* You can apply this annotation to controllers or individual endpoints to define the allowed origins, methods, headers, and other CORS-related settings.
+		
+		
+@Valid:
+		* It triggers validation on an object or its properties, ensuring they adhere to defined constraints (e.g., @NotNull, @Size, @Min, @Max, @Pattern).
+		* It is particularly useful for validating nested objects within a larger object graph.
+		* It is typically placed on method arguments in controllers or service layers to validate incoming data.
+		* If validation fails, a MethodArgumentNotValidException is thrown, which can be handled by a global exception handler. 
+
+
+
+@NotNull:
+		* It is used in Java Bean Validation to enforce constraints on object properties, specifically for strings.
+		* @NotNull only checks for the absence of a null value, while @NotBlank provides a stricter validation for strings by also ensuring they contain at least one non-whitespace character.
+		
+
+@Entity:
+		* 
+
 Stream<Integer> vs Intstream
 	???
 
@@ -482,10 +804,6 @@ System.out::println => It is commonly used with functional interfaces, particula
 	@ColumnTransformer(read = "decrypt_char(BEN_ACCOUNT_NO,'" + Utility.ENCRYPTION_KEY + "')", write = "encrypt(?, '"
 			+ Utility.ENCRYPTION_KEY + "')")
 			
-
-
-
-
 
 
 
