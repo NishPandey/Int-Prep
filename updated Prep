@@ -225,12 +225,140 @@ Springboot provides built in database migration tools like flyway/liquibase
 
 
 Spring boot data jpa advantages over standard jpa -
+It has methods like - .save, .findAll, .flash which helps to not to write quries(native quries).
+
+Use spring data JPA, use variable search criteria by using dynamic query-
+use @query and write where condition
+We can use inbuilt query or custom query here as per requirement
 
 
-when to use custom query over inbuilt jpa query -
+when to use custom query-
+when we have to update something based on some condition.
 
-concept of repository in database - 
-we have - jpa, crud repository, 
+
+explain the concept of repository in Spring data JPA-
+We have @Repository for database transactions.
+We have different types of repository - JPA, CRUD, PagingAndSortingRepository
+Based on requirement we can choose which repository we want.
+
+
+Limitations of repository-?
+
+
+If you have a long batch operation then how would you optimize transaction to manage performance and consistency-
+We can use Cache - to enable cache(not call dal API everytime, save it in cache)
+We can handle it using segments and call them using segment wise
+
+
+difference in  == and .equals
+== is used to compare references
+.equals is used to compare contents
+
+
+A scenario where .equals give false result and == gives true result.
+string s1 = "Hello";
+string s2 = "Hello";
+if(s1 == s2) ==> True;
+String s1 = "Hello";
+String s2 = new String("Hello");
+if(s1.equals2) = True;
+
+
+Java Memory model -
+It is related to thread management.
+It is a abstraction that manages how threads interact through memory and how data is read from and return to main memory.
+
+Java Memoory Management-?
+
+
+Use of Final keyword-
+It is used to make class immutable.
+If we declare a variable as final then we cannot change its value.
+It can be used in immuatbility of a variable as well.
+It is basically used for implementation of immutability.
+
+
+How to make immutable class-
+First declare class as final.
+Then implement getter method only not setter method.
+we can declare the variables as final.
+
+
+How hashmap works.
+3 steps:
+1.use hash function to get the hashcode
+2.initialise the bucket, means it will have formula of hashcode mode arraysize, we will get the reference number
+3.storing in the bucket, whatever hashcode key is found that key we will store it there.
+
+
+what happens if 2 different key have same hashcode-
+hashcollision will occur and hashmap store these key in same bucket.
+before java 8 all entries in same buckets were stored in linked list
+after java 8 all entries are stored in a Balanced Tree in a more efficient manner.
+
+
+
+Suppose u r storing user session data in a hashmap, how you will maintain thread safety-
+we can use synchronisemap
+or we can use concurrent hashmap
+
+
+Explain exception handling(Checked, unchecked)
+Exception handling is a mechanism to handle the errors and exception that occur in our program.
+we have checked and unchecked exceptions
+Unchecked Exceptions are the runtime exceptions which can be handled using the throw keyword.
+Checked Exceptions are the compiled time exception this we can handle using the try catch block
+
+
+How to handle where a method throws multiple types of exception-
+We can use throws keyword here and mention different types of exception-
+Or we can write multiple catch blocks here.
+
+
+JUnit test cases-
+
+How u do testing-
+we have performed sanity testing or unit testing so we have a document where all test cases are written.
+
+
+explain maven, what maven is and why we use maven?
+Maven is a central repository which has all the dependencies
+We use maven so that whatever dependencies we need, we mention it in our pom.xml file and when we build our code then maven will first check in our remote repository that dependencies are present or not and if it is not present then it will download it from central repository for us.
+
+
+Difference between maven clean and maven install-
+Maven clean is used to clean the previous build that we have had
+Maven install is used to install and build the whole application again.
+
+Few shortcuts of STS-
+for debugging code we are using ctrl+shift+i to know the value of the variable.
+ctrl+shift+f to make the code in a proper format.
+ctrl+click to reach the end of the method/loop/class.
+
+Which git collaboration tool u r using-
+AWS 
+
+GIT commands to resolve conflict-
+We resolve it manually as we have in our code written as "head" and ">>" so what ever is between this is our previous code and the downword which is below ">>" is current code
+So based on these(arrow and head) whatever we want to remove or add we accordingly manage it; and then we add it.
+
+
+Difference between gitRebase and gitMerge-
+When we are merging then gitMerge has the previous history and current history as well
+But when we do using gitRebase it just maintain the liner history but not the previous one.
+
+What is gitCherryPic-
+When we have lot of commit but we have to take only specific one commit ahead so we use cherrypick
+so its like git add only.
+
+
+Write a code Using JavaStream to convert the given string into uppercase-
+
+
+
+
+
+
 
 
 
