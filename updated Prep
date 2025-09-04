@@ -1,14 +1,26 @@
 											Set 1 
 
+What is microservice -
+It is a small independent service that is used to perform specific business function
+
+
+
 custom annotation = @retention
 
 @Bean (@qualifier,@primary)
 
 caching(escache, reddish, haaslecast) =  @cacheable, @cachboot, @cachevict
 
-interservice communication in microservice -> 
-	1. sync(REst API (http(direct communication)), finclient (complex(multiple service intercommunication)), webclient(reactive programming(high concurrent application(share market data))) ) 
-	2. async -> 1. message broker(rabbit mq, kafka)- calling method does not wait for response and it just move after creating/producing data ; and 2. messages and events
+Types of Caching?
+2 types 
+	1.In Memory
+	2.Distributed
+
+Annotations in Cache?
+@EnableCaching - to enable cache/caching in ur application
+@Cacheable - to cache data
+@CachePut - to update cache data
+@CacheEvict - to delete chahce data from cache
 
 configuration class for bean; or application.prop/YML for data source; or for server/maven we have pom.xml file => used for customization of annotation
 
@@ -74,6 +86,35 @@ String buffer ->
 		
 .equals -> 
 	compares only values
+	
+
+difference between Serialization and Deserialization ->
+Serialization - It's a process of converting an object into a format that can be stored or transmitted such as byte stream.
+And these byte sream can then be save into a file or it can be send over a network or store in a database.
+Basically its about the objects state making it portable so whenever we want to port the object so we use serilization process
+for eg -> storing a java objects state into a file
+
+Deserialization - It's opposite of serialization
+If we want to retrieve the serialized object then we have to deserialised it first then we can read that object in same state
+
+
+What annotation/liberaries we use for serialization and deserialization?
+we can use serializable interface for serialization
+we have libraries like jackson, gson that can handle the readable formats of data.
+
+
+what challenge u have faced during serialization and deserialization?
+yes 
+Versioning
+Performance
+Security
+
+
+
+
+
+
+
 
 create indexes in SQL -> 
 	it's a db object helps in retrieving records very quickly and more efficiently, 
@@ -147,8 +188,15 @@ coz it uses comparator internally and which has compareto() method so null compa
 finally block will execute even if we write return statement as "system.exit()" at either in try or catch block.
 
 different components of microservices?
-service discovery
-API gateway
+service discovery -> Eureka server used to discover services for communication among the microservices.
+API gateway -> act as a front door for all API's
+user service -> used to handle data related to user
+setting service -> used to handle all settings related to project.
+histurix dashboard -> used to display information about faults in ur application.
+ELK stack -> used to showcase the logs in ur application like we use elastic search.
+Elastic search -> used to log the information about ur logs or application details
+Logs stack -> ued to index the logs to elastic search
+Kibana dashboard -> used as a console where we can see the information about our logs
 load balancer
 service registory
 AOP
@@ -157,6 +205,56 @@ Explanation- As soon as any request is made it goes to API gateway there the loa
 
 circuit braker pattern?
 its used in microservice communication. if any microservice is down and is not able to communicate with other microservice so in this case circuit is broken so we use historic and using historic we write fallback method for microservices which is down to give service/reponse to other microservices
+
+
+How u handle fault tolerance in ur microservice architecture(Circuit breaker)?
+Circuit breaker pattern can be used to handle the fault tolerance
+Consider there are two services and one service is calling to other end and other is calling to 3rd service (A, B, C)
+consider 3 services - A is calling to B and B is calling to C but in case C is not responding so in that case we can use circuit breaker pattern to handle a failure of service A so 
+we can implement a retry mechanism where if the service is down and u r trying to call that service but u r not getting response so u can try once, twice, third and then if that service is still not available then u can send a message that
+this service is not available or u can configure the timeout settings.
+
+
+There are 2 microservice - microservice 1, microservice 2 ; how do these microservice communicate with each other?
+suppose u need some information from microservice 2 so to get info microservice 2 will call microservice 1 by using restTemplate.
+So by using restTemplate.extend we can call the end point which is available in microservice like restTemplate can get the instance of restTemplate then
+we can use instance.get() method which takes two parameters-(URl(end point), method type(get/post/put)) then we need RequestEntity(u r passing some request as part of Header or as a part of that request)
+then u can build requestEntity by using that information
+Then at the last you will get a response when u invoke that endpoint so that response is need to be captured somewhere or in some entity so that will be 4th parameter.
+And using this u can give it to another microservice and get the information.
+
+Can we do this communication in some other way like using some message broker?
+yes we can use message broker for passing messages like we can use a queue or Apache Kafka where one microservice will produce the messages in that queue and the other microservice will consume that queue
+So in this case -> one microservice will continuously produce the messages and the other microservice will continuously read/consume the messages
+Also we have FinClient that can also be used to perform communication between microservices
+
+
+interservice communication in microservice -> 
+	1. sync(REst API (http(direct communication)), finclient (complex(multiple service intercommunication)), webclient(reactive programming(high concurrent application(share market data))) ) 
+	2. async -> 1. message broker(rabbit mq, kafka)- calling method does not wait for response and it just move after creating/producing data ; and 2. messages and events
+
+
+what is synchronous and asynchronous way of communication in microservices?
+Synchrounous communication-
+Synchronous communication means u r performing the operations sequentially, 1 transaction should be completed before proceding with another thransaction
+Asynchronous communication- 
+In asynchronous communication u can perform multiple transactions parallel so for this asynchronous communication we use Queues so one service will be producing the results and putting it into queue and the other service will read that queue continuously.
+
+Flow of service discovery in ur project/Application?
+Service Discovery is used to discover already services which are registered with that discovery server so in our application we are using Eureka server as a service discovery
+So whenever there is a requst from UI or client the request goes through the API Gateway and then the
+API Gateway identifies which service needs to be invoked so it needs to get the instance of that particular service so it can check the service discovery whether that instance is available or not and if that instance is available then 
+you can use that instance and route that request to the particular instance of the backend service.
+So basically 2 annotations are used to discover the services -
+	@EnableEurekaServer - It is used over the class where ur service will act as a eureka server.
+	@EnableEurekaClient - Used to make sure that this service act as a client and this service will be registered with ur eureka server and that eureka server url can be mentioned inside ur application.properties file so that it will register with that particular server
+	
+
+	
+which cloud provider u have used to deploy the microservices application?
+It is taken care by our build and release team.
+So we basically provide our applications jar file and they use that jar file and generate the docker images and by using those docker images they deploy the application.
+
 
 fault isolation
 its a designed principal in a distributed system and software architecture that focuses on limiting the impact of failures within a system. so this insures the failure in one component does not cause cascading failure in other parts of the system. the main goal of this is to contain the failure within the faulty component and prevent it from the malfunctioning of entire system.
@@ -169,8 +267,10 @@ using command line interface
 spring boot actuator, its end points and its advantages-
 it's a module that provids production ready features so that we can monitor the health and env checks, etc . it provides various end points like - info, health, matrix, etc which is used to check spring boot health applications
 
-Depenency injection, how it works-
-3 types - constructor(mostly used), setter and field
+Depenency injection, how it works or bean lifecycle-
+3 types - constructor(mostly used) injection, setter injection and field injection
+It helps in bean lifecycle by decompiling your bean creation and configuration
+
 
 Spring bean(entity class)-
 @bean comes in @autowired of @configuration which is for entity class
@@ -189,6 +289,7 @@ Singleton maintains once instance only.
 @transactional -
 If some process is hapening and due to some reason the process got corrupted or stopped then we have to rollback the process so for this we use @transactional
 @transactional best way to used is at method level not at class level.
+It is used when we perform some operation in database like if we are depositing money then we use @Transactional
 
 @transactional -> what if we write @transactional at class as well as at method level?
 - method level will override the class level annotation but it is not preferred coz it will not behave properly 
@@ -268,7 +369,23 @@ Java Memory model -
 It is related to thread management.
 It is a abstraction that manages how threads interact through memory and how data is read from and return to main memory.
 
+
 Java Memoory Management-?
+
+
+explian abstraction in java?
+Abstraction is where u share the relevant details with the client of the class and u hide the irrelevant details so u just share the details which is required for the client.
+eg -> u r making a call from one of the class so u just give the method name and the parameters cosider the sorting, so u get list in the sorting method and how the sorting happens that is abstracted.
+
+How do u achieve abstraction?
+There r 2 ways for achieving abstraction -
+1. using abstract class
+2. using interface
+I generally used interface for abstraction in java 
+
+
+what is interface?
+Interface is a contract where the class that implements interface has to bind the interface 
 
 
 Use of Final keyword-
@@ -314,6 +431,27 @@ How to handle where a method throws multiple types of exception-
 We can use throws keyword here and mention different types of exception-
 Or we can write multiple catch blocks here.
 
+Consider a scenario where u need to choose SQL or NOSQL database then how u will choose?
+SQL means ur data must be in structured manner
+NOSQL means u can store the data which is not in structured manner
+So we need to decide what kind of data we have means whether u r sure about number of columns if yes then SQL database if not sure then NOSQL database
+consider below factors-
+	data model
+	consistency requirement
+	how complex is the database(Entity)
+	
+	
+How we manage database Schema like we have changes in schema then how we manage? is there any tool?
+U can use tools like flyway or liquibase
+Tools are basically used to write migration steps
+U can even automate this migration steps as a part of your continuous integration continuous development/deployment pipelines so these tools can be used to manage these changes in ur database schema
+
+
+what is unique constraint in datbase?
+It indicate that the record is unique, it is basically applied on a column which will indicate that the value in that column is unique
+so any other record cannot have the same value for that column
+
+
 
 JUnit test cases-
 
@@ -353,6 +491,55 @@ so its like git add only.
 
 
 Write a code Using JavaStream to convert the given string into uppercase-
+
+
+Adv of spring over springboot-
+Spring initializer present in springboot.
+configurations present in springboot.
+embeded server present in springboot.
+
+Most common Annotations you have used and their purposes-
+@SpringBootApplication -> used over main method of springboot application; it's a combination of @enableautoconfiguration, @Configuration, @ComponentScan(where beans/components are located; it takes one parameter as input like package name)
+@RestController -> It's used over controller layer to route the API's to their end points.
+@getmapping, @putmapping, @postmapping, @deletemapping  -> These requests are used to serve the https request like get,put,post,delete.
+@Autowired -> To inject the beans
+etc.
+
+How you handle exception in springboot application/global exception handler-
+You can create a class globalexceptionhandler and annotate it using @RestControllerAdvice(used to handle exception at rest layer)
+Inside this method return ResponseEntity
+for eg u can use @ExceptionHandler Annotation for httpStatus.NOTFound ( resource not found exception)
+So you can basically use @RestControllerAdvice (@ControllerAdvice) along with @ExceptionHandler, (@ResponseStatus for @controllerAdvice) to handle all exceptions
+In Spring boot Exception can be handled in 3 ways-
+1. Default exception handling by Spring Boot
+2. Using @ExceptionHandler annotation
+3. Using @ControllerAdvice for global exception handling
+
+
+different status code-
+404 -> API/Resource is not found
+401 -> InValid Authorisation
+502 -> Issue with server
+403 -> Forbidden
+200 -> Everything is OK
+
+
+Scenario to develop a rest API and fetch data from db so explain how you will code-
+put dependecy in pom.xml for database
+database connection related properties like database URL, username, password, driver define/mention it in Application.property file
+Then in Java code define - controller, service, DAO/Repository Layers.
+In side Controller layer write - getmapping or endpoints which needs to be executed, and call service layer then call DAO/repositor layer.
+In side Repository layer you can perform CRUD operations by using JPA repository.
+suppose you need single record from database then use FindById function of JPA and then map this result to a bean which want to send it as a part of response.
+
+
+
+
+
+
+
+
+
 
 
 
@@ -646,6 +833,14 @@ Stream is lazy coz it works only when terminal operation is performed or means w
 
 ******************************************************************************************************************************
 ********************************** Java 8 features **********************************************************
+
+what is stream?
+stream is a pipeline which will be used to perform/transform the elements of stream.
+suppose, there are many coloured object with multiple shapes; now you want to filter red color with rectangular shape then you can use stream and list and filter functions which are having red colour and then again use filter function which are having rectangle shape.
+
+Itermediate operations and terminal operations in java8?
+Intermediate - Used to transform the elements of a stream.eg -> filter, distinct, 
+Terminal - It will give you the final result or Used to produce final result from ur stream. eg -> forEach, collect, count
 
 
 
