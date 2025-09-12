@@ -5,6 +5,23 @@ It is a small independent service that is used to perform specific business func
 
 
 
+Monolithic projects needs to be created when project is small to medium, simple and  we don't have strong devops or cloud infra team.
+	1.Tight coupling of services:
+		If 1 service is down other servicesalso get affected
+		If 1 service is planned to redeploy other also get affected
+	2.Scaling problem (cannot extend project if needed in future)
+	3.Technology locking (other technology services issue)
+	4.Codebase become complex as project scale.
+	
+Microservice projects needs to be created when project is Large and complex, needs to scale, agility and resilience is needed then for this we must needs to have strong devops team as well.
+In microservices to handle all request API from client we use - API Gateway
+We use Service Registory/Discovery server to manage all information of all API instance, load balancing, service ID, API present in project like API gateway dteails, and other services api url.
+We use config server to configure servers for calling another API means we are using config server to exernalise the configurations of all API at one place
+For internal service communication we use communication over HTTP or other way of communication.
+For tracing logs centrally means tracing logs of all services at one place we use Zipkin [view service through interface] and Sleuth(Spring cloud)[distributor tracing purpose]
+
+
+
 custom annotation = @retention
 
 @Bean (@qualifier,@primary)
@@ -105,13 +122,78 @@ we have libraries like jackson, gson that can handle the readable formats of dat
 
 what challenge u have faced during serialization and deserialization?
 yes 
-Versioning
-Performance
-Security
+Versioning - if the class structure changes like adding or removing fields can cause compatibility issue during deserialization like invalid class exception so to handle this we use "serialVersionUID" field in java
+Performance - serialization might be slow when dealing with large files or complex data payload so to optimise this we can use llibraries like Kryo, etc
+Security - Deserializing data from an untrusted source can lead to some vulnerability like RemoteCodeExecution so to address this we should validate the data source and use techniques like object whitelisting to ensure only expected class are dserialised.
 
 
 
+Difference between pass by value and pass by reference?
+Pass by Value - 
+	Java is consistently a "pass by value" language
+	When a variable is passed to a method, a copy of its value is passed so the method works on this copy so any changes made inside the method don't affect the original variable.
+	In java mostily all primitive are passed by value.
+	eg - inside method we reassign value as : value = 20;
+Pass by Reference -  
+	Java does not support "pass by reference" in the traditional sense
+	In java objects are passed as an argument still uses pass by value
+		eg -  builder = new StringBuilder("New Value");
 
+
+Difference between arraylist and linked list?
+arraylist and linked list both are implementation of list interface in java
+but the storage mechanism for both are different-
+ArrayList uses dynamic array list to store the element so when we add an elements beyond its current capacity so it basically resizes the array by creating a new one with the larger capacity and copying the elements over it
+In Linkedlist uses doubly linkedlist so where each elements contains reference to the previous and next node.
+So if our applicaion involves frequent random access or searching then in this case we can use arraylist
+And if frequent insertion and deletion is involved in the middle or bigining of the list then we can use linkedlist coz it has the links between the nodes
+arraylist is more memory efficient coz it only stores the data and some extra space for resizing, linkedlist uses more memory as each node has two additional references - 1 for the previous node and other for the next node.
+
+
+Difference between comparator and comparable?
+Both are used for sorting purpose
+comparable - 
+		used when we want to define the naural ordering of object, eg: sorting string Alphabetically or numbers numerically but since the comparison logic is part of class itself so u can only have 1 sorting strategy for the class eg: sort with only 1 property of an employee.
+		It has a method called compareTo() which we overwrite and write the sorting logic for that
+comparator - 
+		We can use multiple sorting logic. eg we can use any of the property for the sorting.
+		It has a method called compare() so that is the place where we write the logic of comparison
+
+
+In which package comparator and comparable are found?
+comparable - java.lang
+comparator - java.util
+
+
+with comparator what changes u see in Java 8?
+In java 8 we have removed boiler plate code.
+Like instead of creating a separate class or using an annonymous (inner) class we can directly write the sorting logic as a lambda eg: employe.sort(pass parameter in lambda expression).compareTo().
+Java 8 introduce the Comparator.comparing() method which allows us to create comparators in a cleaner way.
+We can easily reverse the sorting order by using reverse() method of java 8
+[We can directly use stream.sorted() method of java 8 to sort the elements]
+
+Is java 100% object oriented?
+No java is not 100% object oriented but it is 99% object oriented coz we have primitive datatypes like int, float, etc.
+so int, float are of primitive datatype which cannot be converted into object however we have wrapper classes like Integer
+
+
+why we have not made java 100% object oriented is there any benefit?
+Benefits are there for eg: whenevr we are applying sorting and all directly in the memory so it happens fatser way without overhead of object metadata
+So operations on primitive are faster coz they avoid overhead of method calls and object differentiating
+using primitive makes the syntax simple and very readable for basic arithmetic or logical operations and control strucures eg: int x= 5; so its much more simple without creating a object
+it's much faster as compared to wrapper classes
+primitive contains less memory then wrapper class
+primitive data type does not impact garbage collector
+
+How This keyword differs in inside a annonymous inner class and lambda expression?
+	Inside lambda this refers to the enclosing class instance 
+
+what is Heap dump?
+It's a snapshot of heap memory of jvm at specific point in time so it contains information about all the objects in thier memory, their types, references and data
+So this is very much useful for debugging and analysing memory related issues so any kind of memory leaks happens so this is used to prevent that.
+So it identifies which 
+enable that we can use heap time generation
+using tools we can analyse like how and which object is 
 
 
 
@@ -177,6 +259,70 @@ define empty interface(marker interface) then have 1 class which will implement 
 
 can we write functional interface without abstract method?
 No, coz @functional interface must have exactly 1 abstract method, coz this method only use lambda expression and method reference
+
+Explain Functional interface with real life example(Predicate, funcion, consumer)?
+	4 types of functional interface is there -
+		1. Predicate - It is checked based on boolean expression
+		2. Consumer / Bi-Consumer - It is used to accept input, it won't give output
+		3. Supplier - It only gives the output, without taking input like random otp generation 
+	
+What problem option class resolve in Java 8?
+It is used to avoid nullpointer exception.
+It has so many inbuilt methods - like isempty(), isPresent(), .orElseThrow() ... , etc are there to check or avoid nullpointer exception
+
+Difference between map and flatmap?
+Map - it returns a stream ; it is one-to-one mapping ;
+FlatMap - it returns a stream of streams ; it is one-to-many mapping ;
+
+In which scenario you would prefer flatmap?
+extracting words from a list of sentences.
+It is used for flatening as well as transferring the element.
+
+How Java Time API is better then old Date Calender APIs?
+In java 8 Date API came before this we have to parse it.
+So, after java 8 no need to parse means directly we can use date.of(), date.now()
+It's immutable, thread safe.
+
+
+If a class contain date the how you will maintain immutability?
+I'll create a new DateOf new Date and will use date.getTime
+
+Advantages of ENUM over Constants?
+ENUM is used for predefined constants, ENUM can be written in a class or in a separate file as well.
+That means when we want to define self constants(Like weekends which will be used in switch case) then we use enums.
+
+
+Can Enums implement interfaces?
+Yes as ENUM cannot extend classes but yes it can implement interfaces
+
+
+Can we use RequestParam and Pathparam in same method?
+Yes
+
+
+Can we use 2 same url calling from different requestMapping?
+Yes
+
+
+Difference between Valid and Validated?
+valid - 
+Validated - 
+
+
+Can we have multiple @ControllerAdvice?
+ControllerAdvice is mainly used to handle global exception
+We can write only one controllerAdvice and multiple exception handlers.
+@ExceptionHandler is used to handle the local exceptions
+
+
+Difference between returning ResponseEntity and returning an Object/String through RestAPIs?
+ResponseEntity - it becomes generic return type like we write it for ? as we don't know what will this method will return so we use ResponseEntity.
+We can send HTTPSTATUSCode, we can send headers as well in response entity.
+Object/String - 
+
+	
+Internal working of @AutoWired?
+
 
 Treeset having 2 below values
 1	adding null, 
@@ -398,7 +544,7 @@ It is basically used for implementation of immutability.
 How to make immutable class-
 First declare class as final.
 Then implement getter method only not setter method.
-we can declare the variables as final.
+we can declare the variables as private and final.
 
 
 How hashmap works.
@@ -1127,7 +1273,6 @@ System.out::println => It is commonly used with functional interfaces, particula
 	@ColumnTransformer(read = "decrypt_char(BEN_ACCOUNT_NO,'" + Utility.ENCRYPTION_KEY + "')", write = "encrypt(?, '"
 			+ Utility.ENCRYPTION_KEY + "')")
 			
-
 
 
 
