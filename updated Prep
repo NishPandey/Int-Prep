@@ -309,7 +309,7 @@ valid -
 Validated - 
 
 
-Can we have multiple @ControllerAdvice?
+Can we have multiple @ControllerAdvice? Yes by using base package -> eg: @ControllerAdvice(annotations = RestController.class, basePackages = "com.example.admin.controllers")
 ControllerAdvice is mainly used to handle global exception
 We can write only one controllerAdvice and multiple exception handlers.
 @ExceptionHandler is used to handle the local exceptions
@@ -319,6 +319,10 @@ Difference between returning ResponseEntity and returning an Object/String throu
 ResponseEntity - it becomes generic return type like we write it for ? as we don't know what will this method will return so we use ResponseEntity.
 We can send HTTPSTATUSCode, we can send headers as well in response entity.
 Object/String - 
+
+
+What is/does BindingResult?
+BindingResult provides a centralized and standardized way to capture and manage both data binding and validation outcomes, enabling robust error handling and a better user experience in Spring Boot applications.
 
 	
 Internal working of @AutoWired?
@@ -331,7 +335,7 @@ Now print output?
 runtime exception -> coz we added null as null values are not allowed in treeset.
 coz it uses comparator internally and which has compareto() method so null compare to any object will throw nullpointer exception at runtime.
 
-finally block will execute even if we write return statement as "system.exit()" at either in try or catch block.
+finally block will not execute if we write return statement as "system.exit()" at either in try or catch block.
 
 different components of microservices?
 service discovery -> Eureka server used to discover services for communication among the microservices.
@@ -495,6 +499,20 @@ Limitations of repository-?
 If you have a long batch operation then how would you optimize transaction to manage performance and consistency-
 We can use Cache - to enable cache(not call dal API everytime, save it in cache)
 We can handle it using segments and call them using segment wise
+
+
+
+Servlet dispatcher (How the request calls the particular Controller or how request is handled?
+	DispatcherServlet is the Front Controller in a Spring web application. It acts as the entry point for all incoming HTTP requests.
+HandlerAdapter interfaces configured in the Spring application to process the request. It uses annotations like @Controller, @RequestMapping, etc., to identify handler methods (controller endpoints) and prepares the appropriate response objects based on the controller's output.
+	The Spring DispatcherServlet identifies which controller and method to call through a process involving HandlerMapping and annotations.
+HandlerMapping: 
+	When the Spring application starts, the DispatcherServlet initializes and detects all beans annotated with @Controller. It then uses HandlerMapping implementations (like RequestMappingHandlerMapping) to scan these controller classes and their methods.
+Annotation-based Mapping: 
+	The HandlerMapping primarily relies on annotations like @RequestMapping, @GetMapping, @PostMapping, etc., defined on controller classes and methods. These annotations specify the URL patterns, HTTP methods, request parameters, headers, and media types that a particular controller method can handle.
+HandlerAdapter: 
+	Once the DispatcherServlet identifies the target controller method, it uses a HandlerAdapter (like RequestMappingHandlerAdapter) to actually invoke that method. The HandlerAdapter is responsible for handling argument resolution, return value handling, and other aspects of method execution.
+The paths specified by the @RequestMapping annotation are managed internally via the HandlerMapping interface.
 
 
 difference in  == and .equals
