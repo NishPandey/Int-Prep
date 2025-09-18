@@ -1,5 +1,9 @@
 											Set 1 
 
+Difference between Spring boot and Spring MVC?
+Spring MVC : is basically model view controller and its a web framework and its a part of whole spring framework. It allows developers to build web application and restful services using MVC design pattern.
+Spring boot : This frame work is built on top of Spring and it uses Spring MVC internally but it provides some additional things like Autoconfiguration, bolier plate code has been removed, embeded server have like -> Tomcat, Jetty, undertow; Starter dependency, there is no xml configuration required.
+
 What is microservice -
 It is a small independent service that is used to perform specific business function
 
@@ -7,18 +11,24 @@ It is a small independent service that is used to perform specific business func
 
 Monolithic projects needs to be created when project is small to medium, simple and  we don't have strong devops or cloud infra team.
 	1.Tight coupling of services:
-		If 1 service is down other servicesalso get affected
+		If 1 service is down other services also get affected
 		If 1 service is planned to redeploy other also get affected
 	2.Scaling problem (cannot extend project if needed in future)
 	3.Technology locking (other technology services issue)
 	4.Codebase become complex as project scale.
+	5.Modern monolithic(Spring boot) provide inbuilt server.
 	
 Microservice projects needs to be created when project is Large and complex, needs to scale, agility and resilience is needed then for this we must needs to have strong devops team as well.
 In microservices to handle all request API from client we use - API Gateway
 We use Service Registory/Discovery server to manage all information of all API instance, load balancing, service ID, API present in project like API gateway dteails, and other services api url.
 We use config server to configure servers for calling another API means we are using config server to exernalise the configurations of all API at one place
+We have internal inbuilt server as by default.
 For internal service communication we use communication over HTTP or other way of communication.
 For tracing logs centrally means tracing logs of all services at one place we use Zipkin [view service through interface] and Sleuth(Spring cloud)[distributor tracing purpose]
+
+Scalability : For monolithic we have to scale whole application but for microservices we can scale independent microservices.
+Advance Technology : We have to use single technology for developing whole application, we cannot change it but in microservices we can use java, python, etc technology different different services and different databases can be used.
+
 
 
 
@@ -84,26 +94,104 @@ concurrent hashmap ->
 
 remove duplicate from list and preserve its order -> 1. arraylist(items) 2. iterator(arraylist(set.add.arraylist(items)));[linkedhashset(items)]
 
+
+How hashmap works.
+3 steps:
+1.use hash function to get the hashcode
+2.initialise the bucket, means it will have formula of hashcode mode arraysize, we will get the reference number
+3.storing in the bucket, whatever hashcode key is found that key we will store it there.
+
+
+what happens if 2 different key have same hashcode-
+hashcollision will occur and hashmap store these key in same bucket.
+before java 8 all entries in same buckets were stored in linked list
+after java 8 all entries are stored in a Balanced Tree in a more efficient manner.
+
+
+Suppose u r storing user session data in a hashmap, how you will maintain thread safety-
+we can use synchronisemap
+or we can use concurrent hashmap
+
+
+Difference between HashMap and TreeMap?
+Treemap : We usually used whenever we want to sort the elements by keys so it can be done either through natural sorting order or through custom comparator. RedBlackTree underline datastructure is used. Not thread safe. It does not allow null key but can have null values.
+HashMap : It does not order the elements. So the keys are stored in random oreder. HashTable underline datastructure is used. Not thread safe. It allows 1 null key and can have multiple null values.
+
+why Treemap not allow null key but allow null values?
+Coz of sorting as Treemap sorts the keys using comparable or may use custom comaparator. So if we insert null key then treemap will use null key and that null key will be used for comparison so it will give nullpointer exception. And values are not going to be compared.
+
+Suppose we have same method name and one is having object parameter and other is having String parameter and through main method we are passing NULL the which method will be called and Y?
+String method null will be called coz java chooses most specific methods so when we have to resolve the overloaded methods calls so both can accept null, String and object both accepts null but string is more specific then object coz string is the subclass of the object so string will be called.
+
+What if both methods are equally specific like Suppose we have same method name and one is having int parameter and other is having double parameter and through main method we are passing NULL the which method will be called and Y?
+If both methods are equally specific then we will get compile time error.
+
+
+What if both methods are equally specific like Suppose we have same method name and one is having int parameter and other is having Integer parameter and through main method we are passing NULL the which method will be called and Y?
+Integer will be called coz it is wrapper class.
+And null is a valid value for an Integer object (a reference type), but it cannot be directly assigned or passed to a primitive int type. If you attempt to pass null to a method expecting an int, it will result in a NullPointerException at runtime 
+
+
 vector -> 
 	introduced in java version 1.2, it's synchronized, it came before arraylist, it's threadsafe, it's less efficient, less methods present, allows 1 null value and 1 null key
 
 volatile keyword -> 
 	value of a variable will be modified by different threads, used in multithreading env. ,it ensures value visibility across the thread, Problem -> it doesn't provide automicity of read and write operation, it shows most recent value, to maintain automicity we need to use "automic" keyword.
+	Volatile ensures that the changes to a variable are immediately visibles to all threads in multiThreading.
 
 Transient -> 
-	field should not be serialized
+	field should not be serialized.
 
-Sring builder -> 
-	mutable, not synchronized, not thread safe
+String ->
+	immutable, once created it cannot be modified
+
 String buffer -> 
 	mutable, synchronized, thread safe
+	
+Sring builder -> 
+	mutable, not synchronized, not thread safe
+
+when we can use String buffer, give a scenario?
+	As String buffer is thread safe and we use it mostly in multi threaded environment.
+	Suppose we have a web server and that is handling multiple request simultaneously. And suppose we are writing the logs for each request so in this case its better to use String buffer instead of String builder.
+	Coz if multiple thread call log method so in that case string buffer which is synchronised so that prevents the data like being generating the inconsistent result. so there will be no inconsistent result and logs will be printed one after the another.
+	Coz at a time only 1 thread can come but if we use string builder then in that case it might corrupt the data and it might not be useful.
+
+	
+How does java ensures Thread Safety?
+	1.Synchronised keyword or Synchronised block can be used.
+	2.Volatile keyword is there using this visibility of variable can be done across all the threads.
+	3.Concurrent collection is there like concurrentHashMap, CopyOnWriteArrayList.
+	4.Atomic can be used.
+	5.Using Thread Safe classes like String buffer, Vector, HashTable.
+	
+Suppose we have a string then how to remove spaces from this?
+We can use replaceAll(). then we pass " "(want to replace) to replace with empty().
+OR by using trim() method as -> originalString.trim() OR originalString.strip() OR originalString.replaceAll("\\s", "") OR
+using java8?
+	String.char().filter(n -> !character.isWhiteSpace()).collect(Collectors.toList());
+	OR =>  String s = "    Geeks     for Geeks     ";
+	    String a = s.chars()
+        .filter(c -> !Character.isWhitespace(c))
+        .mapToObj(c -> String.valueOf((char) c))
+        .collect(Collectors.joining());
+
+
+
 
 = =  -> 
-	compares two object and check whether they point to same memory location
+	compares two object/references and check whether they point to same memory location
 		
 .equals -> 
-	compares only values
+	compares only values/content
 	
+For eg :
+String a =  new String("XYZ");
+String b =  new String("XYZ");
+
+a == b => False coz memory refernce is different
+a.equals().b => True coz content is same.
+
 
 difference between Serialization and Deserialization ->
 Serialization - It's a process of converting an object into a format that can be stored or transmitted such as byte stream.
@@ -221,6 +309,10 @@ support mostly logic of static and default method in java8.
 private method came in java9
 If logic is bigger in static/default then we want to separate/private the logic then we use private method in interface and that is not accessible outside interface and only that interface methods can use it so we use private method for code reusability within interface, more readable, maintainable, avoid duplication in logics
 
+Can we overide Private and Static method?
+Private method cannot be overridden coz it is not visible outside of the class.
+Static methods also cannot be truley overriden coz they belong to the class not to the object but if we define a static method with the same name in child class then we say it method hiding not overidding, so it looks like overriding but it is not.
+
 default method? -> 
 	backward compatibility for older code, And don't want implementing classes to override default method as they can overrirde or can enhance the logic
 	
@@ -286,6 +378,9 @@ It's immutable, thread safe.
 
 If a class contain date the how you will maintain immutability?
 I'll create a new DateOf new Date and will use date.getTime
+
+What is ENUM?
+ENUM represents the fixed set os constants like we have Weekdays - monday,tuesday, wednesday... so those things if we want to use in our code then we can use ENUM. So those fix constants we can give in code.
 
 Advantages of ENUM over Constants?
 ENUM is used for predefined constants, ENUM can be written in a class or in a separate file as well.
@@ -400,6 +495,8 @@ So basically 2 annotations are used to discover the services -
 	@EnableEurekaClient - Used to make sure that this service act as a client and this service will be registered with ur eureka server and that eureka server url can be mentioned inside ur application.properties file so that it will register with that particular server
 	
 
+How u secure the microservices?
+I have used JWT token for authentication and authorization.
 	
 which cloud provider u have used to deploy the microservices application?
 It is taken care by our build and release team.
@@ -415,6 +512,9 @@ using ide - sts, intellige ide
 using command line interface
 
 spring boot actuator, its end points and its advantages-
+Spring boot Actuator:
+			Actuator is used for the monitoring and managing of the application like we have health, matrix and all.
+			So It basically provides the production ready features. And if we want to access it, then we can access it using like actuator/healh, actuator/infoMatrix, etc
 it's a module that provids production ready features so that we can monitor the health and env checks, etc . it provides various end points like - info, health, matrix, etc which is used to check spring boot health applications
 
 Depenency injection, how it works or bean lifecycle-
@@ -429,6 +529,27 @@ To make code more optimize we use database beans to map columns to java objects(
 
 Database connection in spring boot-
 Add dependency of mysql in pom.xml file then define datasource- username, password in application.property file
+
+How you define any custom property in Spring boot?
+In application.property or in .yml file we can define that property/key/message.
+And that we want to use in java so we can write @value -> [@Value("${refCodeValidity}")] and can write $sign before that and we can use it and also we can use @configurationProperties
+		eg done in our project => {
+	@Configuration
+	@ComponentScan(basePackages = "com.ibm.sbi.lotus.cloudant")
+	@ImportResource(locations = { "file:/websphere/SharedLib/applicationContext.xml" })
+	@PropertySource("file:/websphere/SharedLib/application_shared_uat.properties")
+	@PropertySource("classpath:application.properties")
+}
+
+
+Difference between application.properties and application.yml file?
+Both are used for external configuration so we can use either of them
+application.properties : It uses traditional way like key value pair format.
+application.yml : It uses yaml format, so it supports formats like nesting and readibility. suppose we want to give server.port and also we want to give server.servlet then we just see identation in yml file. 
+server
+	port : 8080
+	Servlet : 12.0.6
+So basically yaml file is more readable.
 
 
 Singleton designpattern and database connection relation between them-
@@ -460,6 +581,14 @@ We did using AWS -
 clone repo > do code change > merge code > conflict resolve manually by using head and arrows > push code to pipeline > Pipeline deploys the code
 Steps in pipeline -
 build > create image >.....
+
+
+How you deploy the Spring boot Application?(docker, AWS,...)?
+First we write code(Spring boot microservices) and then we move that in docker image then that docker image is pushed to the ECR(Elastic Container Registory) that is basically AWS code build.
+Then further once it is pushed to ECR then we use AWS code pipeline after that we run that ECS(Elastic Container Service) of AWS.
+So all this docker and pushing to the Elastic Container Registory we write yaml file and using that yaml file we write all the steps need to be performed.
+And all this things happens automatically.
+
 
 How Springboot simplifies the web development -
 .Used to reduce boiler plate code.
@@ -501,6 +630,13 @@ We can use Cache - to enable cache(not call dal API everytime, save it in cache)
 We can handle it using segments and call them using segment wise
 
 
+What is dispacther Servlet?
+It is kind of initial or central controller in Spring MVC framework.
+It handles all the HTTP request and whatever the responses are there in the web application.
+So basically it is a front controller in Spring MVC. So whenever a client sends the any request so first it goes the web.xml in Spring MVC but if its Spring boot then it autoconfigurs the dispatcher servlet.
+And then further dispacther servlet finds the appropriate controller using the handler mapping and then it invokes the controller method and then it returns the model and view object.
+And then it further goes to the view resolver so it resolves the view like -> JSP, JSON; And then the response is further rendered or send to the client.
+
 
 Servlet dispatcher (How the request calls the particular Controller or how request is handled?
 	DispatcherServlet is the Front Controller in a Spring web application. It acts as the entry point for all incoming HTTP requests.
@@ -533,6 +669,26 @@ Java Memory model -
 It is related to thread management.
 It is a abstraction that manages how threads interact through memory and how data is read from and return to main memory.
 
+How many types of memory management is there in java?
+5
+Heap memory mamangement :
+		It is udes for dynamic memory allocation of java objects and jre classes. It is managed by the garbase collectors so it automatically freeze up the memory used by the objects that are no longer reachable.
+Stack memory mamangement :
+		It is used for method execution and storing local variables. So method call information and reference to the objects are also stored in this stack memory. memory is allocated and deallocated as Last Int First Out (LIFO)Manner automatically when method are called and returned.
+Method Area
+PC registers
+Native method stack
+
+
+If you get OutOfMemoryError in production then how you debug?
+	If it is OutOfMemoryError it means the heap space is exhausted so there is no more memory in the heap memory.
+	We will try to understand the error then we will check the jvm heap setting like we can maximze the size-X ms, in this way we can maximize the heap size
+	We can configure JVM and give some path where the heap dump can be generated.
+	We can use visual VM for analysing of heap dump and then in that tool we will try to look for any object which is consuming large amount of memory.
+	We will also check for any kind of memory leak is not there in code.
+	
+
+
 
 Java Memoory Management-?
 
@@ -551,6 +707,11 @@ I generally used interface for abstraction in java
 what is interface?
 Interface is a contract where the class that implements interface has to bind the interface 
 
+Suppose we have final variable(Final in a = 20;) so can you assing it to another variable?
+Yes, we can assign its value to another variable like int b = a;
+But we cannot change the value of "a".
+So assignment can be done but the value cannot be changed.
+
 
 Use of Final keyword-
 It is used to make class immutable.
@@ -565,35 +726,47 @@ Then implement getter method only not setter method.
 we can declare the variables as private and final.
 
 
-How hashmap works.
-3 steps:
-1.use hash function to get the hashcode
-2.initialise the bucket, means it will have formula of hashcode mode arraysize, we will get the reference number
-3.storing in the bucket, whatever hashcode key is found that key we will store it there.
-
-
-what happens if 2 different key have same hashcode-
-hashcollision will occur and hashmap store these key in same bucket.
-before java 8 all entries in same buckets were stored in linked list
-after java 8 all entries are stored in a Balanced Tree in a more efficient manner.
-
-
-
-Suppose u r storing user session data in a hashmap, how you will maintain thread safety-
-we can use synchronisemap
-or we can use concurrent hashmap
-
-
 Explain exception handling(Checked, unchecked)
 Exception handling is a mechanism to handle the errors and exception that occur in our program.
 we have checked and unchecked exceptions
-Unchecked Exceptions are the runtime exceptions which can be handled using the throw keyword.
-Checked Exceptions are the compiled time exception this we can handle using the try catch block
+Unchecked Exceptions : are the runtime exceptions which can be handled using the throw keyword.
+Checked Exceptions : are the compiled time exception this we can handle using the try catch block
 
+What is CustomException explain?
+To create custom exception we can extend RunTimeException and we can define constructor to accept the messages.
+In Spring boot we can use @ControllerAdvice with @ExceptionHandler to handle the exception globally and once this is done then we can return structure response with message and timeStamp.
+
+Explain Exception Hierarchy?
+Throwable class :
+1. Exception											2. Error(we cannot handle)i.e irrecoveable situation[OutOFMemory, StackOverFlow error]
+i. Checked(CompileTime)  	ii.Unchecked(RunTime)[ArrayOutOfBoundExcptn, NullPointerExceptn, AsymmetricExcptn] i.e it cannot be defined pre i.e not during compile time but happens at runtime
+(inputOutPut, SQLException, FileNotFoundExcptn)
+
+
+Suppose any error happens in the finally block then what happens or how it is different from normal exception like we use try and catch block to handle exception ?
+If any exception happens at finally block in that case whatever the exception has been generated in finally block that will be overriden on top of any exception that has happened earlier.
+So it will suppress the other exception and final exception will be shown which has happened in the finally block. So we will not be able to know what has happened earlier, before the finally block.
+Note : for getting suppressed exception we can use try with resource and call getSuppressed() method, this method came in java 7.
 
 How to handle where a method throws multiple types of exception-
 We can use throws keyword here and mention different types of exception-
 Or we can write multiple catch blocks here.
+
+Throw vs Throws?
+Throws : It is only required for unchecked exceptions or at compile time exception
+		We write in method signature itself like throws ExceptionName
+		It is used to declare the exception at method signature that this mehtod can throw exception.
+Throw : We forcefully throw an error and it should be prefered at runTime exception or custom exceptions.
+		We write inside the method body
+		It is explicitly used to throw an exception from a method or any block of code. 
+
+Suppose we have Class A, Class B, Class C and class B extend class A, class C extend class B that means class A is super class, class B is child of A and class C is child of B.
+Then how you will handle exception, and suppose we write first catch block as C then we write B then we write A?
+So do u think it will work or it will create problem.
+		In this scenario first we will catch the child class exception first i.e C and then B and then A.
+		So basically we first handle most specific exception first so here child C is the most child one so that exception handle first then B exception will be handled and then A exception will be handled.
+		If we reorder then it will throw compilation error.
+
 
 Consider a scenario where u need to choose SQL or NOSQL database then how u will choose?
 SQL means ur data must be in structured manner
@@ -1011,9 +1184,27 @@ Terminal - It will give you the final result or Used to produce final result fro
 
 
 
+Lambda Expression
+Functional Interface
+Date Time API
+Default method
+Static Method
+Method Reference
+Optional class
 
 
 
+Parallel Stream?
+Whenever you want to access the data concurrently then we use parallel stream.
+Suppose the order of processing is not important for us and we just want to process it as much as faster in that case we can go with the parallel stream.
+So basically they use the power of the whatever the CPU course on which it is being processed. so coz of this it processes the things very much faster in case of large data sets.
+
+Disadvantages of parallel stream?
+1. Sequence -> If we have to process something in sequence then in that case we cannot use parallel stream.
+	eg.
+2. Thread  safety
+3. Debug
+4. Number of thread to generate ->
 
 
 
@@ -1291,7 +1482,6 @@ System.out::println => It is commonly used with functional interfaces, particula
 	@ColumnTransformer(read = "decrypt_char(BEN_ACCOUNT_NO,'" + Utility.ENCRYPTION_KEY + "')", write = "encrypt(?, '"
 			+ Utility.ENCRYPTION_KEY + "')")
 			
-
 
 
 
