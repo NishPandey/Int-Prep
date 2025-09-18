@@ -94,6 +94,23 @@ concurrent hashmap ->
 
 remove duplicate from list and preserve its order -> 1. arraylist(items) 2. iterator(arraylist(set.add.arraylist(items)));[linkedhashset(items)]
 
+Is HashMap is synchronised?
+No HashMap is not synchronized.
+
+If we want to synchronised HashMap then how can i achieve that?
+We can use concurrentHashMap OR.
+We can use Collections method i.e collections.synchronisedMap() which wraps the HashMap and provides synchronised access of it.
+
+In which scenario I should go for concurrentHashMap and in which scenario I should go for collections.synchronisedHashMap()?
+ConcurrentHashMap has high concurrency level so it supports multiple concurrent read writes operations so in that case we should go with the ConcurrentHashMap. so basically whenever the read write happens so that happens on a single bucket and rest of the buckets are free so we can use concurrentHashMap in this case.
+Whenever we are going to use collections.synchronisedHashMap() so in that case it blocks the whole HashMap itself so the concurrency will be low in this case. 
+So performance will be much better in case of ConcurrentHashMap coz we make lock on just a specific block so it will be much faster but synchronisedHashMap will be low.
+
+
+In HashMap suppose we want to print all of the keys in one go then how we can do that?
+We can go with enhanced for loop and we can just say map.keysets and then we can just print all of them
+Also we can say map.keyset.foreach and then we can pass each key as a parameter of lambda expression and we can simply print it out using java 8.
+
 
 How hashmap works.
 3 steps:
@@ -192,11 +209,16 @@ String b =  new String("XYZ");
 a == b => False coz memory refernce is different
 a.equals().b => True coz content is same.
 
+What is serialVersionUID?
+Mostly we use this inside the bean classes.
+We use it while serialization and deserialization. so this is kind of unique identifier and it is static and final so that we declare there.
+So main purpose of this is to serialize an object and whenever that is going to be deserialized then it should just mix urs that it is the same object class which was serialized.
+So if a class definition changes suppose any fields are being added or removed or any methods are getting modified then in that case serialVersionUID also should be changed. So coz of this it helps that an object serialized with an older version of the class is not serialized with the newer version and that might not be compatible also. So just to track all this thing we use serialVersionUID.
 
 difference between Serialization and Deserialization ->
 Serialization - It's a process of converting an object into a format that can be stored or transmitted such as byte stream.
 And these byte sream can then be save into a file or it can be send over a network or store in a database.
-Basically its about the objects state making it portable so whenever we want to port the object so we use serilization process
+Basically its about the objects state making it portable so whenever we want to port the object so we use serialization process
 for eg -> storing a java objects state into a file
 
 Deserialization - It's opposite of serialization
@@ -303,6 +325,9 @@ Java 8 :
 A class implement both interfaces.
 We want to print value which is in default(common) method?
 Diamond problem -> compiler will throw compile time error and will ask forcefully override method and in that method say which interface method we want to call like interfaceA.super().method_name(); 
+
+Can we override and overload the static methods?
+In Java we can overload static method but we cannot override them. Coz static is something related to the class so just with the class.static method we can access it.
 
 -private method in java interface?
 support mostly logic of static and default method in java8.
@@ -513,6 +538,8 @@ using command line interface
 
 spring boot actuator, its end points and its advantages-
 Spring boot Actuator:
+			Actuator is basically a built in configuration, we just have to add a dependency of it in pom.xmml
+			Default end points of actuator are - health and info however we can change their behaviour.
 			Actuator is used for the monitoring and managing of the application like we have health, matrix and all.
 			So It basically provides the production ready features. And if we want to access it, then we can access it using like actuator/healh, actuator/infoMatrix, etc
 it's a module that provids production ready features so that we can monitor the health and env checks, etc . it provides various end points like - info, health, matrix, etc which is used to check spring boot health applications
@@ -593,6 +620,14 @@ And all this things happens automatically.
 How Springboot simplifies the web development -
 .Used to reduce boiler plate code.
 .Annotations make it easier like - autowired, springbootapplication, actuators(health maintain), swagger(byforget API), more easier to maintain a web application.
+
+In Spring boot there are various ways to handle the incoming data request from http, so what are the various ways?
+We have a controller then we write @RequestMapping, further we have at method level annotations like @GetMapping, @Postmapping, @Putmapping.
+
+How to find employes?ID in spring boot?
+We can use @RequestParam with whatever in question mark like id.
+We can use @PathVariable for empyee/ID
+We can use @RequestBody so it will be in JSON format so all that are coming in request can be converted into objects
 
 
 Servers that springboot provides inbuilt-
@@ -722,8 +757,9 @@ It is basically used for implementation of immutability.
 
 How to make immutable class-
 First declare class as final.
-Then implement getter method only not setter method.
 we can declare the variables as private and final.
+Then implement getter method only not setter method.
+
 
 
 Explain exception handling(Checked, unchecked)
@@ -1179,8 +1215,13 @@ Itermediate operations and terminal operations in java8?
 Intermediate - Used to transform the elements of a stream.eg -> filter, distinct, 
 Terminal - It will give you the final result or Used to produce final result from ur stream. eg -> forEach, collect, count
 
-
-
+what are the main advantages of stream API in java 8?
+There are various advantages of stream API, main purpose of introducing was using Functional way of programming and code reusability and readability can be achieved. Also we can reduce boiler plate code using stream API. Also it provide various convenient operations like - filter, map, reduce, collect.
+So it is very easy to use and handy.
+Also stream are lazy evaluated as long as we don't write the terminal operation it is not evaluated until we write that.
+So the optimization is very high, and it improves the performance specially whenever we have the large data sets.
+We have Parallel processing support as well so it can again perform some operations very much faster way, compare to the traditional way.
+Stream API uses generics so that ensures type safety during the data processing so this ultimately helps finding out the errors at compile time rather then the run time
 
 
 
@@ -1201,10 +1242,10 @@ So basically they use the power of the whatever the CPU course on which it is be
 
 Disadvantages of parallel stream?
 1. Sequence -> If we have to process something in sequence then in that case we cannot use parallel stream.
-	eg.
-2. Thread  safety
-3. Debug
-4. Number of thread to generate ->
+	eg. 
+2. Thread  safety -> If the method called in parallel stream is not thread safe so that can lead o inconsistent or some corrupted result	  
+3. Debug -> If we want to debug it, then it is quite difficult coz it sometimes give 1st and 3rd indexes then it can give another index 
+4. Number of thread to generate -> it is not in our control for the generation of thread coz it generates the thread automatically based on CPU course.
 
 
 
