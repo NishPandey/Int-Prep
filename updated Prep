@@ -41,6 +41,11 @@ Advance Technology : We have to use single technology for developing whole appli
 
 custom annotation = @retention
 
+How we create custom annotation?
+There are ways, we should use target retention, these annotations.
+
+We can define custom annotation and annotate it with @component or another stereotype
+
 @Bean (@qualifier,@primary).
 @qualifier :
 @primary : 
@@ -48,7 +53,7 @@ custom annotation = @retention
 
 What is bean?
 	It is a spring boot object which spring boot takes care of it.
-	The Spring IoC container is responsible for the entire lifecycle of a bean, including its creation, configuration, and destruction. This "inversion of control" means that instead of your code directly creating and managing object dependencies, the container handles it.
+	The Spring IoC container is responsible for the entire lifecycle of a bean, including its creation, configuration, and destruction. This "inversion of control" means that instead of your code directly creating and managing object dependencies, the container handles it. So IOC containers uses Metadata. This metadata spring creates and wires bean runtime.  So all this data gets stored in the metadata – bean creation, configuration, we just give the annotations and then these things gets stored in the metadata and then IOC container looks the metadata and just take help and just do things.
 	Configuration: Beans are defined through configuration metadata. 
 	This can be done using:
 	1.XML-based configuration: Defining beans and their dependencies in XML files.
@@ -60,12 +65,16 @@ What is bean?
 	2.Prototype: A new instance of the bean is created each time it is requested.
 	3.Request, Session, Application: Scopes specific to web applications.
 
+Can we interchange @repository with @service?
+Yes we can but its not a good practice.
 
 Difference between application context and bean factory?
-Application context : 
-Bean Factory :
+Both BeanFactory and ApplicationContext serve as Inversion of Control (IoC) containers in Spring, responsible for managing the lifecycle and dependencies of beans. However, ApplicationContext is a more advanced and feature-rich extension of BeanFactory. BeanFactory provides the core functionality of an IoC container
+Application context : We use in the main method, we call the run() method by application context. Application context is a superset of bean factory.
+Bean Factory : It is basic DI container. It works in initialization, it’s a light wait
 
-Scenario where to use Bean Factory and where to use Application Context?
+Scenario when to use Bean Factory over Application Context?
+In memory consent environment where fully application context features  are not needed for simple stand alone application we go for bean factory.
 
 What is Spring IOC Container?
 
@@ -76,12 +85,29 @@ JPA repository :
 CRUD repository :
 
 How u have used logging in ur project?
-Logback is the default one for logs.
+Logback is the default one for logs in spring boot coz it is light wait performance and it integrates well with the spring.
+We have 2 mode like log4j2, java util logging
 Log4J :
 Kibana :
 
+How u debug any defect by looking logs?
+In application.property file we have to set the log level to debug(gives logs at debug level) then we have error, debug, info, etc
+Different logging levels?
+1.Trace
+2.Debug
+3.Info
+4.Warn
+5.Error
+6.and Fatal
+
 How u visualise the logs?
 tools like - graphana
+
+Status code?
+200 -> success
+404 -> not found
+500 ->
+Client error
 
 Spring Profiles?
 
@@ -158,6 +184,9 @@ remove duplicate from list and preserve its order -> 1. arraylist(items) 2. iter
 
 Is HashMap is synchronised?
 No HashMap is not synchronized.
+
+How to maintain insertion order in set?
+I’ll use linked HashSet.
 
 If we want to synchronised HashMap then how can i achieve that?
 We can use concurrentHashMap OR.
@@ -243,6 +272,7 @@ Sring builder ->
 	mutable, not synchronized, not thread safe
 
 Why String is immuatble and what are the advantages of being immutable?
+String is immutable for the security purpose.
 
 
 when we can use String buffer, give a scenario?
@@ -449,7 +479,59 @@ a.method()
 } output = ?  yes it will working
 
 equals and hashcode contract?
-whenever we override equals then we should override hashcode as well from object class
+whenever we override equals then we should override hashcode as well from object class coz ?
+
+suppose class B extends class A and both have constructors then in main method we are creating object of B then whose constructor will be called first?
+Parent class constructor will be called first then the child class constructor so class A constructor will be called.
+
+What happens If parent class do not have default constructor but have only parameterise constructor?
+If parent has parametarised constructor then child must explicitly has to call parent class constructor using the super keyword otherwise compilation will be failed.
+In method overloading if we change the method return type then we get compile time error.
+We cannot override static method as static method belongs to class, not to any individual object
+Can we call both super and this in the same constructor?
+No, coz both must be the  1st  statement in the constructor so u can only use one of them.
+
+What happens internally when u create an object in java?
+When we create an object we get the reference in heap memory which is used for storing purpose, means object is created in heap memory and we get the storage.
+When we create an object the class is loaded first in JVM.
+Memory is assigned in the heap memory.
+Default initialisation, constructor call will be there.
+
+Can constructors be overridden in java?
+we can have multiple constructor(overloading).
+No, constructor cannot be overridden coz they are not inherited by child classes.
+So constructors are meant to initialised object of their own class if they allow overriding it would break the object creation chains since child constructors are not supposed to redefine parent constructor.
+What will happen if u call a method inside its own body without a terminating condition?
+It will be a infinite loop coz we don’t have a termination. Since it is a infinite recursion it will lead to stackoverflow.
+
+How recursion is different from iteration?
+Iteration : We have  1 loop like for, while, do while.
+Recursion : Here the method calls itself like we have method add() and inside its body it is calling itself.
+
+Explain different types of class loaders in Java?
+We have 3 types of loaders :
+1.Application Loader -> It  is responsible for loading application-specific classes from the classpath.
+2.Extension Loader -> It loads classes from the JRE
+3.Bootstrap loader -> It is core part of JVM loads
+
+
+Difference between loading and linking?
+Loading : when we create an object it gets loaded, i.e loading
+Linking : The class is prepared for execution so actually there are 3 steps-
+1.Verification
+2.Preparation
+3. Resolution
+
+Difference between JDK, JRE and JVM?
+JDK -> It consist of JVM and JRE.
+JRE -> It actually executes the program. It convert programs to byte code like .class
+JVM -> It has JRE, and application libraries as well. Which is needed to execute the program.
+
+What’s the role of JIT?
+JIT is present in JRE. It converts the .java class to byte class i.e .class so that we can run it anywhere.(Platform independent)
+
+Despite there is garbage collector in java y we might see the memory leaks?
+Sometimes the objects are not in use but it still points/refers to some point like null object so it leads to memory leak.
 
 only overriding equals is not enough - explain
 hashcode of object class is generated behind the scene and is used for comparison; which can have same/different values/objects so it fails to compare the equals values
@@ -540,6 +622,11 @@ BindingResult provides a centralized and standardized way to capture and manage 
 	
 Internal working of @AutoWired?
 
+Git rebase?
+used to integrate changes from one branch into another by moving or combining a sequence of commits to a new base commit. It essentially rewrites the commit history of a branch to make it appear as if the work started from a different, often more recent, point. 
+Git cherraypick?
+When we want to cherry pick from particular branch then we use cherry pick.
+It allows you to select a specific commit from one branch and apply its changes to another branch as a new commit. This is useful when you need to incorporate a particular change without merging the entire source branch. 
 
 Treeset having 2 below values
 1	adding null, 
@@ -638,9 +725,17 @@ Spring boot Actuator:
 it's a module that provids production ready features so that we can monitor the health and env checks, etc . it provides various end points like - info, health, matrix, etc which is used to check spring boot health applications
 
 Depenency injection, how it works or bean lifecycle-
-3 types - constructor(mostly used) injection, setter injection and field injection
+3 types – 
+1.constructor(mostly used) injection : It supports immutability, easier for unit testing, it helps to avoid circular dependency.
+2.setter injection : After the bean is created, Spring identifies the setter methods marked for injection (typically with @Autowired or configured in XML) and calls them, passing in the required dependency objects.
+3.Field injection :  A field within a class is annotated with @Autowired (or a similar annotation).
 It helps in bean lifecycle by decompiling your bean creation and configuration
 
+Difference between autowire and manual bean wiring in xml configuration?
+Autowire : we just use the annotation @autowire when we define the object then top of that we use @Autowire annotation.
+Xml configuration : In earlier spring, not in spring boot we have to write the configuration in xml file i.e xml configuration.
+Explain NoSuchBeanException?
+Sometimes we try to create any bean which does not exist so at that time we get this exception.
 
 Spring bean(entity class)-
 @bean comes in @autowired of @configuration which is for entity class
@@ -800,10 +895,12 @@ It is a abstraction that manages how threads interact through memory and how dat
 How many types of memory management is there in java?
 5
 Heap memory mamangement :
-		It is udes for dynamic memory allocation of java objects and jre classes. It is managed by the garbase collectors so it automatically freeze up the memory used by the objects that are no longer reachable.
+		It is uses for dynamic memory allocation of java objects and jre classes. It is managed by the garbase collectors so it automatically freeze up the memory used by the objects that are no longer reachable.
 		Heap memory is complex one.
+String/string pool, and objects gets stored in heap memory.
 Stack memory mamangement :
-		It is used for method execution and storing local variables. So method call information and reference to the objects are also stored in this stack memory. memory is allocated and deallocated as Last Int First Out (LIFO)Manner automatically when method are called and returned.
+		It is used for function/method execution and storing local variables. So method call information and reference to the objects are also stored in this stack memory. memory is allocated and deallocated as Last Int First Out (LIFO)Manner automatically when method are called and returned.
+Program gets executed by the stack memory.
 		Stack is faster to access coz stack has direct support from CPU with stack pointers
 Method Area
 PC registers
