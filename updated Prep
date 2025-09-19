@@ -1,5 +1,12 @@
 											Set 1 
 
+S -> SRP means one class one responsibility
+O -> OCP means extend without modifying
+L -> LSP means Child should replace parent
+I -> ISP means prefer small, client-specific interfaces
+D -> DIP means depend on abstraction not implementation
+
+
 Difference between Spring boot and Spring MVC?
 Spring MVC : is basically model view controller and its a web framework and its a part of whole spring framework. It allows developers to build web application and restful services using MVC design pattern.
 Spring boot : This frame work is built on top of Spring and it uses Spring MVC internally but it provides some additional things like Autoconfiguration, bolier plate code has been removed, embeded server have like -> Tomcat, Jetty, undertow; Starter dependency, there is no xml configuration required.
@@ -34,7 +41,55 @@ Advance Technology : We have to use single technology for developing whole appli
 
 custom annotation = @retention
 
-@Bean (@qualifier,@primary)
+@Bean (@qualifier,@primary).
+@qualifier :
+@primary : 
+
+
+What is bean?
+	It is a spring boot object which spring boot takes care of it.
+	The Spring IoC container is responsible for the entire lifecycle of a bean, including its creation, configuration, and destruction. This "inversion of control" means that instead of your code directly creating and managing object dependencies, the container handles it.
+	Configuration: Beans are defined through configuration metadata. 
+	This can be done using:
+	1.XML-based configuration: Defining beans and their dependencies in XML files.
+	2.Annotation-based configuration: Using annotations like @Component, @Service, @Repository, @Controller, and @Bean within Java classes to mark them as Spring beans.
+	3.Java-based configuration: Using @Configuration classes and @Bean methods to programmatically define beans.
+	Scope: Beans can have different scopes, defining how many instances of a bean are created and when they are available. 
+	Common scopes include:
+	1.Singleton (default): Only one instance of the bean is created per Spring IoC container and shared across the entire application.
+	2.Prototype: A new instance of the bean is created each time it is requested.
+	3.Request, Session, Application: Scopes specific to web applications.
+
+
+Difference between application context and bean factory?
+Application context : 
+Bean Factory :
+
+Scenario where to use Bean Factory and where to use Application Context?
+
+What is Spring IOC Container?
+
+Did u faced any Circular dependency issue and how u resolved it?
+
+Difference between JPA repository and CRUD repository?
+JPA repository :
+CRUD repository :
+
+How u have used logging in ur project?
+Logback is the default one for logs.
+Log4J :
+Kibana :
+
+How u visualise the logs?
+tools like - graphana
+
+Spring Profiles?
+
+Authentication in ur project? What details are present in JWT tokens?
+Bearer token has issue and expiry time, subject, user email id and password.
+
+How 2 microservices communicate with each other?
+
 
 caching(escache, reddish, haaslecast) =  @cacheable, @cachboot, @cachevict
 
@@ -66,6 +121,13 @@ custom scope ?
 service registory -> 
 	it's a database in microservices that  holds the location of all services instances(services to register by providing ip over there and discover by itself without hardcoding); if service instance crash/shutdown then its automatically removed from the registory.
 service discovery -> 
+
+Microservices design pattern?
+1.Eventual/consistency
+2. SAGA
+
+How SAGA pattern works?
+
 
 SAGA design pattern in microservices -> 
 	sequence of local transaction in multiple services, each transaction updates the state within its service; 
@@ -156,6 +218,18 @@ volatile keyword ->
 	value of a variable will be modified by different threads, used in multithreading env. ,it ensures value visibility across the thread, Problem -> it doesn't provide automicity of read and write operation, it shows most recent value, to maintain automicity we need to use "automic" keyword.
 	Volatile ensures that the changes to a variable are immediately visibles to all threads in multiThreading.
 
+Executor service ->
+	It is a class that helps in maintaining a pool of threads and assigning them tasks.
+	It provides methods to submit tasks, manage the life cycle of threads, and get the results of tasks.
+	It is a convenient way to execute tasks in parallel and manage the resources efficiently.
+	The ExecutorService is a powerful interface in Java's java. util. concurrent package that simplifies managing tasks that need to run concurrently. It abstracts away the complexities of thread creation, management, and scheduling, allowing us to focus on the actual work that needs to be done.
+ExecutorService Creation Methods:
+	1.Executors.newFixedThreadPool(3): creates an ExecutorService with a pool of 3 threads.
+	2.newCachedThreadPool(): Creates a thread pool that adjusts its size dynamically based on the workload. Idle threads may be terminated after a certain period.
+	3.newSingleThreadExecutor(): Creates an ExecutorService that uses a single worker thread to execute tasks sequentially.
+	4.newScheduledThreadPool(int corePoolSize): Creates an ExecutorService that can schedule commands to run after a given delay, or to execute periodically.
+	
+	
 Transient -> 
 	field should not be serialized.
 
@@ -167,6 +241,9 @@ String buffer ->
 	
 Sring builder -> 
 	mutable, not synchronized, not thread safe
+
+Why String is immuatble and what are the advantages of being immutable?
+
 
 when we can use String buffer, give a scenario?
 	As String buffer is thread safe and we use it mostly in multi threaded environment.
@@ -274,6 +351,8 @@ In which package comparator and comparable are found?
 comparable - java.lang
 comparator - java.util
 
+what is Annonymous class?
+
 
 with comparator what changes u see in Java 8?
 In java 8 we have removed boiler plate code.
@@ -307,7 +386,6 @@ using tools we can analyse like how and which object is
 
 
 
-
 create indexes in SQL -> 
 	it's a db object helps in retrieving records very quickly and more efficiently, 
 	indexing is applied to column on both table and views(declare a column as an index within a  table/view); 
@@ -317,7 +395,19 @@ indexing working internally ->
 	as query runs we can see in table index is generated , some data strucure/algorithm like B tree, hash table is used; based on algo used it scannes only few rows of tables
 
 				
-				
+Rest API and SOAP?
+Rest API : We basically write request body in xml format and pass it to the backend
+SOAP : 	
+Feature					SOAP									REST
+Type					Protocol							Architectural Style
+Message Format			XML									JSON, XML, HTML, Plain Text
+Transport				HTTP, SMTP, TCP, etc.				Primarily HTTP
+Statefulness			Can be stateful						Stateless
+Security				Built-in (WS-Security)				External (HTTPS, OAuth, JWT)
+Complexity				Higher								Lower
+Use Cases		Enterprise, high security, reliability		Web/mobile, microservices, public APIs
+
+			
 							SET 2
 
 Java 8 :
@@ -381,7 +471,10 @@ Explain Functional interface with real life example(Predicate, funcion, consumer
 	4 types of functional interface is there -
 		1. Predicate - It is checked based on boolean expression
 		2. Consumer / Bi-Consumer - It is used to accept input, it won't give output
-		3. Supplier - It only gives the output, without taking input like random otp generation 
+		3. Supplier - It only gives the output, without taking input like random otp generation
+		4. Function -
+Built-In Java Functional Interfaces :
+Comparator, lambda expression, runnable, callable are functional interface
 	
 What problem option class resolve in Java 8?
 It is used to avoid nullpointer exception.
@@ -499,7 +592,7 @@ So in this case -> one microservice will continuously produce the messages and t
 Also we have FinClient that can also be used to perform communication between microservices
 
 
-interservice communication in microservice -> 
+interservice communication in microservice(how 2 microservice communicate with each other?) -> 
 	1. sync(REst API (http(direct communication)), finclient (complex(multiple service intercommunication)), webclient(reactive programming(high concurrent application(share market data))) ) 
 	2. async -> 1. message broker(rabbit mq, kafka)- calling method does not wait for response and it just move after creating/producing data ; and 2. messages and events
 
@@ -708,8 +801,10 @@ How many types of memory management is there in java?
 5
 Heap memory mamangement :
 		It is udes for dynamic memory allocation of java objects and jre classes. It is managed by the garbase collectors so it automatically freeze up the memory used by the objects that are no longer reachable.
+		Heap memory is complex one.
 Stack memory mamangement :
 		It is used for method execution and storing local variables. So method call information and reference to the objects are also stored in this stack memory. memory is allocated and deallocated as Last Int First Out (LIFO)Manner automatically when method are called and returned.
+		Stack is faster to access coz stack has direct support from CPU with stack pointers
 Method Area
 PC registers
 Native method stack
@@ -906,7 +1001,11 @@ In side Repository layer you can perform CRUD operations by using JPA repository
 suppose you need single record from database then use FindById function of JPA and then map this result to a bean which want to send it as a part of response.
 
 
-
+Difference between PUT and Patch?
+1.Scope of Update: PUT replaces the entire resource; PATCH applies partial modifications.
+2.Data Sent: PUT sends a complete resource representation; PATCH sends only the changes.
+3.Idempotency: PUT is idempotent; PATCH is not always idempotent.
+4.Efficiency: PATCH is generally more efficient for partial updates due to less data transfer.
 
 
 
@@ -1207,13 +1306,17 @@ Stream is lazy coz it works only when terminal operation is performed or means w
 ******************************************************************************************************************************
 ********************************** Java 8 features **********************************************************
 
+For loop /traditional loop  or stream which one is effective?
+for large dataset for loop/traditional is effective
+for small amount of data stream is effective
+
 what is stream?
 stream is a pipeline which will be used to perform/transform the elements of stream.
 suppose, there are many coloured object with multiple shapes; now you want to filter red color with rectangular shape then you can use stream and list and filter functions which are having red colour and then again use filter function which are having rectangle shape.
 
 Itermediate operations and terminal operations in java8?
 Intermediate - Used to transform the elements of a stream.eg -> filter, distinct, 
-Terminal - It will give you the final result or Used to produce final result from ur stream. eg -> forEach, collect, count
+Terminal - It will give you the final result or Used to produce final result from ur stream. eg -> forEach, collect, count, reduce
 
 what are the main advantages of stream API in java 8?
 There are various advantages of stream API, main purpose of introducing was using Functional way of programming and code reusability and readability can be achieved. Also we can reduce boiler plate code using stream API. Also it provide various convenient operations like - filter, map, reduce, collect.
@@ -1523,7 +1626,3 @@ System.out::println => It is commonly used with functional interfaces, particula
 	@ColumnTransformer(read = "decrypt_char(BEN_ACCOUNT_NO,'" + Utility.ENCRYPTION_KEY + "')", write = "encrypt(?, '"
 			+ Utility.ENCRYPTION_KEY + "')")
 			
-
-
-
-
