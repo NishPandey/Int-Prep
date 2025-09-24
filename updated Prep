@@ -170,6 +170,21 @@ OOPS concept ->
 
 a single class 'Employee' behind the scene follows inheritance as by default, object class is the implementation class; also it follows polymorphism(overloading and overriding(hashcode, equals))
 
+Explain inheritance?
+Inheriting the property of parent into child class.
+We can extend class into class(as method definition is present) but we can implement the interface into class as interface has only property
+
+Explain Polymorphism?
+compile time polymorphism - it checks what type of object variable is. It is achieved by method overloading
+run time polymorphism - it checks what kind of value is assigned inside that variable. It is achieved by method overriding.
+
+How encapsulation improve code maintainability?
+encapsulation ensures security also we can create an object of the class and get the attributes.
+
+Can you achieve abstraction without abstract classes or interface?
+Yes, by using private variabes(Method hiding).
+
+
 ArrayList -> 
 	frequently data access is needed; uses dynamic array
 LinkedList -> 
@@ -177,16 +192,43 @@ LinkedList ->
 
 hashmap -> 
 	not thread safe, allows null keys and null values, performance is faster then chashmap
+	Average time complexity of get and put operations in HashMap is O(1).
+	
 concurrent hashmap -> 
 	thread safe, not allows null key and null values, performance is slow then hashmap
 
 remove duplicate from list and preserve its order -> 1. arraylist(items) 2. iterator(arraylist(set.add.arraylist(items)));[linkedhashset(items)]
 
+if we need a thread safe map where reads are far more frequent then writes then which implementation you would choose and y?
+I'll prefer concurrentHashMap coz its thread safe and two operations cannot be done simultaniously coz of concurrenmodificationException.
+because they use fine-grained locking to allow multiple threads to operate on different segments of the map simultaneously, drastically improving read performance compared to coarse-grained synchronized maps. This contrasts with synchronized maps, which lock the entire map for any operation, creating bottlenecks and poor performance for high-read scenarios. 
+
+
+Can two unqual objects have a same hashcode?
+Yes, we call this situation as hash collision.
+Hashcode do not guarantee uniqueness.
+
+
+Can two equal objects have a different hashcode?
+No, two objects that are considered "equal" according to their equals() method must have the same hashCode(). This is a fundamental contract for how hashCode() and equals() should be implemented, 
+Failure to adhere to this contract can lead to unexpected and incorrect behavior in your programs.
+
+suppose u are writing a code where u have to update score of players regularly then which collection u will use?
+HashMap - for overall look up(fast lookup)
+TreeMap - for priority queue(maintains ordering to get top and efficiently)
+
+
 Is HashMap is synchronised?
 No HashMap is not synchronized.
 
 How to maintain insertion order in set?
-I’ll use linked HashSet.
+I’ll use linked HashSet coz it maintains insertion order.
+
+Difference between HashMap, LinkedHashMap and TreeMap?
+HashMap : (k-v pair, array of bucket) It stores elements in no particular order but offers the fastest performance (O(1) in ideal cases) and allows one null key
+LinkedHashMap :(linkedlist) It maintains the order of insertion using a doubly-linked list on top of a hash table, offering O(1) performance but slightly slower than HashMap
+TreeMap : (Treeset) It stores elements in a sorted order (ascending) based on keys, using a red-black tree for its structure, resulting in O(logN) performance and disallowing null keys. 
+
 
 If we want to synchronised HashMap then how can i achieve that?
 We can use concurrentHashMap OR.
@@ -196,6 +238,16 @@ In which scenario I should go for concurrentHashMap and in which scenario I shou
 ConcurrentHashMap has high concurrency level so it supports multiple concurrent read writes operations so in that case we should go with the ConcurrentHashMap. so basically whenever the read write happens so that happens on a single bucket and rest of the buckets are free so we can use concurrentHashMap in this case.
 Whenever we are going to use collections.synchronisedHashMap() so in that case it blocks the whole HashMap itself so the concurrency will be low in this case. 
 So performance will be much better in case of ConcurrentHashMap coz we make lock on just a specific block so it will be much faster but synchronisedHashMap will be low.
+
+What is concurrentHashMap?
+ConcurrentHashMap in Java is a thread-safe implementation of the Map interface, designed for use in multi-threaded environments where multiple threads need to concurrently access and modify the map. It offers significant advantages over Collections.synchronizedMap(new HashMap()) or HashTable by providing better concurrency and performance.
+To avoid ambiguity in ConcurrentHashMap null is not allowed as a key or value. 
+It uses internal segmentation in a lock; concurrent reads and updates without blocking the whole map.
+
+
+What is SynchronisedHashMap?
+"synchronized HashMap" refers to a standard HashMap that has been made thread-safe by wrapping it with synchronization mechanisms. This is typically achieved using the Collections.synchronizedMap() method.
+In synchronised map entire map is locked for each operations and performance is lower in multi threaded environment.
 
 
 In HashMap suppose we want to print all of the keys in one go then how we can do that?
@@ -301,6 +353,12 @@ using java8?
         .collect(Collectors.joining());
 
 
+Difference between fail fast and fail safe iterator?
+fail fast and fail safe both are iterator.
+A fail-fast iterator operates directly on the original collection, throws a ConcurrentModificationException if the collection is modified during iteration, and supports iterator methods like remove(), ensuring data integrity but not allowing concurrent changes. (Use Case) Ideal for single-threaded applications or when you need to be immediately notified of any structural changes. (Eg) Iterators from java.util collections like ArrayList, HashMap, etc.. 
+
+A fail-safe iterator works on a copy or snapshot of the collection, does not throw an exception on structural modification, and typically does not support iterator methods like remove(), prioritizing stable iteration over data accuracy. (USe case) Best for multi-threaded applications where concurrent modifications are expected, ensuring stable iteration without exceptions. (Eg) Iterators from java.util.concurrent collections like ConcurrentHashMap, CopyOnWriteArrayList. 
+	
 
 
 = =  -> 
@@ -368,7 +426,7 @@ arraylist is more memory efficient coz it only stores the data and some extra sp
 
 
 Difference between comparator and comparable?
-Both are used for sorting purpose
+Both are used for sorting purpose and are functional interfaces
 comparable - 
 		used when we want to define the naural ordering of object, eg: sorting string Alphabetically or numbers numerically but since the comparison logic is part of class itself so u can only have 1 sorting strategy for the class eg: sort with only 1 property of an employee.
 		It has a method called compareTo() which we overwrite and write the sorting logic for that
@@ -479,7 +537,12 @@ a.method()
 } output = ?  yes it will working
 
 equals and hashcode contract?
-whenever we override equals then we should override hashcode as well from object class coz ?
+These both are deployed in object class
+It is a fundamental principle for how objects behave in hash-based collections like HashMap, HashSet, and Hashtable.
+so whenever we override equals then we should override hashcode as well from object class coz If you override equals() but not hashCode(): Two objects that you deem "equal" by your custom equals() method might still have different default hashCode() values (which are typically based on memory address). This means they could be stored in different buckets in a hash-based collection.
+In essence, overriding hashCode() ensures that logically equal objects will hash to the same bucket, allowing hash-based collections to function correctly and efficiently.
+
+
 
 suppose class B extends class A and both have constructors then in main method we are creating object of B then whose constructor will be called first?
 Parent class constructor will be called first then the child class constructor so class A constructor will be called.
@@ -546,6 +609,12 @@ kind of empty interface - it does not have any methods, its kind of marking/tagg
 custom marker interface- how to create?
 define empty interface(marker interface) then have 1 class which will implement marker interface then 1 class to check if a class is implementing marker interface.
 
+What is functional interface?
+functional interface are those interface that contains only one abstract method.
+OR A functional interface can have multiple default or static methods with implementations, it is the presence of exactly one abstract method that defines it as functional. 
+eg - Comparator, comparable, runnable, Callable are functional interface
+
+
 can we write functional interface without abstract method?
 No, coz @functional interface must have exactly 1 abstract method, coz this method only use lambda expression and method reference
 
@@ -554,9 +623,9 @@ Explain Functional interface with real life example(Predicate, funcion, consumer
 		1. Predicate - It is checked based on boolean expression
 		2. Consumer / Bi-Consumer - It is used to accept input, it won't give output
 		3. Supplier - It only gives the output, without taking input like random otp generation
-		4. Function -
+		4. Function - Input and OutPut
 Built-In Java Functional Interfaces :
-Comparator, lambda expression, runnable, callable are functional interface
+Comparator, comparable, lambda expression, runnable, Callable are functional interface
 	
 What problem option class resolve in Java 8?
 It is used to avoid nullpointer exception.
@@ -565,6 +634,10 @@ It has so many inbuilt methods - like isempty(), isPresent(), .orElseThrow() ...
 Difference between map and flatmap?
 Map - it returns a stream ; it is one-to-one mapping ;
 FlatMap - it returns a stream of streams ; it is one-to-many mapping ;
+
+Why do we usually avoid many to many direct mapping in large enterprise projects/applications?
+its not a good practice coz there are multiple large amount of data
+
 
 In which scenario you would prefer flatmap?
 extracting words from a list of sentences.
@@ -1361,11 +1434,14 @@ Hibernate Workflow::
 	
 Note - for creating sessioin factory we are using singleton design pattern
 
+what is(difference between) Lazy and Eager fetching in JPA?
+
+
 We have used rlationship of::
 	@OneToOne(mappedBy = "loanAgainstMFEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true):-
 			mappedBy => It will handle the mapping with field "loanAgainstMFEntity" without creating a new column/table for this
 			fetch => Used to fetch by type eager means direct/automatically we get the result and type lazy(it is of default type) means on demand means we have to call get method to get data.
-			cascade => All operations performed on parents will get affected to its child as well
+			cascade => All operations performed on parents will get affected/propagated to its child as well
 			orphanRemoval => same operation is performed on child even after we get the updated data from parent
 		@JoinColumn(name = "NRO_ACCOUNT_ID", referencedColumnName = "ID"):-
 			This JoinColumn is used to handle the relationship with column "NRO_ACCOUNT_ID"
