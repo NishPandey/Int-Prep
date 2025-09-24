@@ -37,3 +37,42 @@ ANSWER:
  But in the case of delete the log(backend file) is created from where you can get your data ROLLBACK if deleted by mistake
 
  REMEMBER: In DELETE case ROLLBACK can be done only before the COMMIT
+
+
+//sql query to find city names whose starting and ending letters are vowels
+SELECT stu_name 
+FROM student 
+WHERE stu_name LIKE '[aeiouAEIOU]%[aeiouAEIOU]'
+
+
+//Difference between GroupBy and Having?
+SELECT department, AVG(salary)
+FROM employees
+GROUP BY department
+HAVING AVG(salary) > 75000;
+
+Difference between Unique and Primary?
+Feature              PRIMARY KEY                                                                  DEFAULT
+Purpose            Uniquely identifies records and enforces data integrity.        Provides an automatic value when none is specified during insertion.
+Uniqueness          Enforces uniqueness for the column(s) it's applied to.          Does not enforce uniqueness; multiple rows can have the same default value.
+NULL Values        Cannot contain NULL values.                                     Can contain NULL values if a default is not set, or if the default is NULL.
+Number per Table      Only one per table.                                        Multiple columns can have default values.
+Relationship        Used to establish relationships between tables (foreign keys).  Does not directly relate to table relationships.
+
+//Find 3rd highest salary
+SELECT MAX(salary) AS third_highest_salary
+FROM employees
+WHERE salary < (
+    SELECT MAX(salary)
+    FROM employees
+    WHERE salary < (
+        SELECT MAX(salary)
+        FROM employees
+    )
+);
+
+OR
+SELECT DISTINCT salary
+FROM employees
+ORDER BY salary DESC
+LIMIT 1 OFFSET 2;
