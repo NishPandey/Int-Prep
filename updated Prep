@@ -159,9 +159,19 @@ SAGA design pattern in microservices ->
 	sequence of local transaction in multiple services, each transaction updates the state within its service; 
 	if  any step fails then compenseting transaction is executed to undo the previous step.
 {SAGA types ->1. coreography 2. orchestation(centrally managed)}
+The SAGA pattern breaks down a complex transaction into a series of smaller, isolated operations, each handled by a different service.
+Distributed transaction is a system that handles a small part of the work, but they all must complete their respective tasks successfully for the overall transaction to be considered successful.
+SAGA coreography(decentralised/asynchronous queue) -> trigers the event
+		cast and debug is easy. more preffered way.
+SAGA orchestation(central) -> squence is required
+
 
 Idempotency -> 
-	multiple times we do get, put, delete it doesn't create problem(means these are idompotent) but for post multiple entries are created in database
+	multiple times we do get, put, delete it doesn't create problem(means these are idompotent) but for post multiple entries are created in database.
+	An operation is idempotent if performing it multiple times has the same effect as performing it once. In other words no matter how many times you call it, the state of the system remains the same.
+	Commonly used in REST APIs and HTTP methods but also in general Java methods.
+	Eg - GET, PUT, DELETE.(POST is not idempotent)
+	A method is idempotent if calling it multiple times with the same parameters doesn't change the result beyond the first call. eg setting balance method in account class. (increment() method is not idempotent)
 
 object class is the super class of all java classes and its present in java.lang package; methods -> equals, hashcode, clone, noify, notifyall, tostring, wait
 
@@ -1620,6 +1630,34 @@ Identify and Analyze Deadlocks: Enable SQL logging in your JPA provider (e.g., e
 
 what is(difference between) Lazy and Eager fetching in JPA?
 These strategies determine when related data is loaded from the database.
+1. Eager Fetching (FetchType.EAGER):
+This is the default FetchType in Hibernate. It means that the associated entity will be fetched only when it is accessed for the first time. This can improve performance in cases where the associated entity is not required most of the time. This can be more efficient than eagerly fetching the entity, especially if the entity has a lot of data and is not needed for every use of the parent entity.
+eg ->
+@Entity
+public class Employee {
+    @OneToOne(fetch = FetchType.LAZY) OR @ManyToOne(fetch = FetchType.EAGER)// Eagerly loads the Department
+    @JoinColumn(name = "address_id")
+    private Address address;
+
+    // other fields and methods
+}
+
+	
+2. Lazy Fetching (FetchType.LAZY):
+This FetchType means that the associated entity will be fetched together with the main entity when the main entity is fetched from the database. This can be useful in cases where the associated entity is always required, but can also result in a performance decrease if the associated entity is large and/or has many associations itself.
+eg ->
+@Entity
+public class Employee {
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "address_id")
+    private Address address;
+
+    // other fields and methods
+}
+OR
+@OneToMany(mappedBy = "department", fetch = FetchType.LAZY) // Lazily loads Employees
+    private List<Employee> employees;	
+
 
 We have used rlationship of::
 	@OneToOne(mappedBy = "loanAgainstMFEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true):-
