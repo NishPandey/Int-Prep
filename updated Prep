@@ -50,6 +50,26 @@ We can define custom annotation and annotate it with @component or another stere
 @qualifier :
 @primary : 
 
+Bean life cycle?
+1.	Bean Definition Loading: 
+Spring reads the bean definitions from configuration metadata (e.g., XML, Java annotations, or Java configuration) to understand how to create and configure the beans.
+2.	Bean Instantiation: 
+The Spring container creates an instance of the bean, typically by invoking its constructor.
+3.	Dependency Injection: 
+After instantiation, the container injects any required dependencies into the bean, either through constructor injection, setter injection, or field injection.
+4.	Bean Initialization: 
+This stage involves preparing the bean for use. It can include:
+a.	BeanNameAware and BeanFactoryAware / ApplicationContextAware callbacks: If the bean implements these interfaces, Spring injects the bean's name, the BeanFactory, or the ApplicationContext respectively.
+b.	BeanPostProcessor.postProcessBeforeInitialization(): Custom logic can be executed by BeanPostProcessors before any initialization methods are called.
+c.	@PostConstruct or init-method: If defined, methods annotated with @PostConstruct or specified as init-method in the configuration are invoked for custom initialization logic.
+d.	InitializingBean.afterPropertiesSet(): If the bean implements InitializingBean, its afterPropertiesSet() method is called.
+5.	Bean Usage: 
+The fully initialized bean is now ready for use by the application and can interact with other components.
+6.	Bean Destruction: 
+When the Spring container is shut down, or a bean is no longer needed, the destruction phase occurs. This can involve:
+a.	@PreDestroy or destroy-method: If defined, methods annotated with @PreDestroy or specified as destroy-method are invoked for custom cleanup logic.
+b.	DisposableBean.destroy(): If the bean implements DisposableBean, its destroy() method is called. 
+c.	BeanPostProcessor.postProcessBeforeDestruction(): Custom logic can be executed by BeanPostProcessors before the bean is destroyed.
 
 What is bean?
 	It is a spring boot object which spring boot takes care of it.
@@ -77,12 +97,28 @@ Scenario when to use Bean Factory over Application Context?
 In memory consent environment where fully application context features  are not needed for simple stand alone application we go for bean factory.
 
 What is Spring IOC Container?
+The Spring IoC (Inversion of Control) container is a core component of the Spring Framework, responsible for managing the lifecycle of Java objects, known as "beans." It implements the Inversion of Control principle, where the framework, rather than the application code, takes control of creating, configuring, and assembling objects and their dependencies.
+It does below tasks-
+	i.Object Creation and Management: 
+	ii.Dependency Injection (DI):
+	iii.Configuration: 
+iv.Lifecycle Management: 
 
 Did u faced any Circular dependency issue and how u resolved it?
+A circular dependency occurs when two classes depend on each other. For example, class A needs class B, and class B also needs class A. 
+we can address the problem by changing the way our beans are wired – to use setter injection (or field injection) instead of constructor injection. This way, Spring creates the beans, but the dependencies aren't injected until they are needed.
 
 Difference between JPA repository and CRUD repository?
+In Spring Data JPA, CrudRepository and JpaRepository are interfaces that provide different levels of functionality for data access.
 JPA repository :
-CRUD repository :
+•	JpaRepository extends PagingAndSortingRepository, which in turn extends CrudRepository.
+•	Therefore, JpaRepository inherits all the methods from both CrudRepository and PagingAndSortingRepository.
+•	Examples of additional methods in JpaRepository include flush(), saveAndFlush(), deleteInBatch(), and methods that accept Pageable and Sort objects for pagination and sorting.
+
+CRUD repository : 
+•	CrudRepository is a foundational interface that provides basic Create, Read, Update, and Delete (CRUD) operations.
+•	It offers methods like save(), findById(), findAll(), delete(), and count().
+
 
 How u have used logging in ur project?
 Logback is the default one for logs in spring boot coz it is light wait performance and it integrates well with the spring.
@@ -110,12 +146,18 @@ Status code?
 Client error
 
 Spring Profiles?
+•	You can use the @Profile annotation to conditionally create Spring beans or entire @Configuration classes based on whether a specific profile is active. This means certain components or features can be enabled or disabled depending on the environment.
+•	Spring Boot supports profile-specific application property files. For example, application-dev.properties or application-prod.properties
+•	Profiles can be activated in several ways:
+a. application.properties: Set the spring.profiles.active property (e.g., spring.profiles.active=dev).
+
+
 
 Authentication in ur project? What details are present in JWT tokens?
 Bearer token has issue and expiry time, subject, user email id and password.
 
 How 2 microservices communicate with each other?
-
+Microservices communicate using two main patterns: synchronous communication (like HTTP/REST APIs or gRPC) where one service waits for a direct response, and asynchronous communication (using message brokers such as Kafka or RabbitMQ) where services send messages and continue processing without waiting for a reply. The choice between these methods depends on whether a real-time response is needed or if decoupling and event-driven responses are more appropriate.  
 
 caching(escache, reddish, haaslecast) =  @cacheable, @cachboot, @cachevict
 
@@ -146,11 +188,20 @@ custom scope ?
 
 service registory -> 
 	it's a database in microservices that  holds the location of all services instances(services to register by providing ip over there and discover by itself without hardcoding); if service instance crash/shutdown then its automatically removed from the registory.
+
 service discovery -> 
+Service discovery is the technology and process for automatically finding and connecting services and devices on a network, typically in cloud-based microservices architectures, eliminating the need for manual configuration
 
 Microservices design pattern?
 1.Eventual/consistency
 2. SAGA
+3. API Gateway Pattern
+4. Circuit Breaker Pattern
+5. Strangler Pattern
+6. Command Query Responsibility Segregation (CQRS)
+7. Event Sourcing
+8. Sidecar Pattern
+9. Backends for Frontends (BFF) Pattern
 
 How SAGA pattern works?
 
@@ -161,10 +212,11 @@ SAGA design pattern in microservices ->
 {SAGA types ->1. coreography 2. orchestation(centrally managed)}
 The SAGA pattern breaks down a complex transaction into a series of smaller, isolated operations, each handled by a different service.
 Distributed transaction is a system that handles a small part of the work, but they all must complete their respective tasks successfully for the overall transaction to be considered successful.
-SAGA coreography(decentralised/asynchronous queue) -> trigers the event
-		cast and debug is easy. more preffered way.
-SAGA orchestation(central) -> squence is required
-
+SAGA coreography(decision logic is decentralised/asynchronous queue) ->(Event driven architecture) Services communicate directly by publishing and consuming events without a central coordinator. 
+			It is mostly used as it is loosely coupled, event driven, services are flexible or independent, robust, cast and debug is easy. more preferred way.
+			Observability and tracking of decoupled services/system is difficult.
+SAGA orchestation(decision logic is centralized) -> A centralized orchestrator (a dedicated service) manages the entire saga, dictating the order of operations and instructing each participant service on what to do. 
+			For synchronous communication(squence is required) we can use orchestration.
 
 Idempotency -> 
 	multiple times we do get, put, delete it doesn't create problem(means these are idompotent) but for post multiple entries are created in database.
@@ -452,6 +504,26 @@ comparable - java.lang
 comparator - java.util
 
 what is Annonymous class?
+An anonymous class is a class without a name that is defined and instantiated in a single expression. It is a type of inner class used when a specific, one-time implementation of an interface or an abstract class is required, or when overriding a method of an existing class for a single instance. 
+Eg ->
+interface Greeting {
+    void sayHello();
+}
+
+public class Main {
+    public static void main(String[] args) {
+        // Anonymous class implementing the Greeting interface
+        Greeting englishGreeting = new Greeting() {
+            @Override
+            public void sayHello() {
+                System.out.println("Hello!");
+            }
+        };
+
+        englishGreeting.sayHello(); // Output: Hello!
+    }
+}
+
 
 
 with comparator what changes u see in Java 8?
@@ -493,6 +565,20 @@ create indexes in SQL ->
 
 indexing working internally -> 
 	as query runs we can see in table index is generated , some data strucure/algorithm like B tree, hash table is used; based on algo used it scannes only few rows of tables
+
+Common types of indexes include:
+•	Clustered Index: 
+Determines the physical order of data rows in the table. A table can only have one clustered index.
+•	Non-Clustered Index: 
+A separate structure that contains the indexed column values and pointers to the actual data rows. A table can have multiple non-clustered indexes.
+•	Unique Index: 
+Ensures that all values in the indexed column(s) are unique.
+•	Filtered Index: 
+Applies an index only to a subset of rows in a table, based on a specified filter condition.
+
+Pagination in SQL-
+	The main concept of the Paginating results in SQL involves the use of the 'LIMIT' and 'OFFSET' clauses in SQL queries. By the name of the clause, we can know that it simply limits the number of rows.
+The 'LIMIT' clause is mainly used for restricting the number of rows that are returned in a set of results. Here the 'OFFSET' clause is to specify the starting point within the result set.
 
 				
 Rest API and SOAP?
@@ -621,6 +707,26 @@ We have 3 types of loaders :
 3.Bootstrap loader -> It is core part of JVM loads
 
 JVM Architecture:
+	The Java Virtual Machine (JVM) architecture provides a runtime environment for executing Java bytecode. It can be understood through its three main components: the Class Loader Subsystem, the Runtime Data Area, and the Execution Engine. 
+1.	Class Loader Subsystem: a.bootstrap, b.application, .extention
+2.	Linking and Initialization : 
+a.	Verification: Ensures the loaded bytecode is valid and secure.
+b.	Preparation: Allocates memory for static variables and initializes them to default values.
+c.	Resolution: Replaces symbolic references with direct references.
+
+Initialization is the final phase of the class-loading process. Static variables are assigned original values and static blocks are executed.
+3.	Runtime Data Areas: 
+a.	Method Area:
+b.	Heap:
+c.	JVM Stacks:
+d.	PC Registers: 
+e.	Native Method Stacks:
+4.Execution Engine:
+		a.Interpreter: 
+		b. Just-In-Time (JIT) Compiler:
+		c. Garbage Collector:
+5.Java Native Interface (JNI)
+
 
 
 Difference between loading and linking?
@@ -719,8 +825,8 @@ Yes
 
 
 Difference between Valid and Validated?
-valid - 
-Validated - 
+valid - @Valid is part of the standard Java Bean Validation API (JSR-303/JSR-380). This makes it a standard, portable solution for validation across different Java EE environments.
+Validated -  @Validated is a Spring Framework-specific annotation. It extends the functionality provided by @Valid.
 
 
 Can we have multiple @ControllerAdvice? Yes by using base package -> eg: @ControllerAdvice(annotations = RestController.class, basePackages = "com.example.admin.controllers")
@@ -775,12 +881,12 @@ Explanation- As soon as any request is made it goes to API gateway there the loa
 circuit braker pattern?
 its used in microservice communication. if any microservice is down and is not able to communicate with other microservice so in this case circuit is broken so we use historic and using historic we write fallback method for microservices which is down to give service/reponse to other microservices
 The Circuit Breaker pattern typically operates in three main states: 
-	i.Closed : In this state it operates normally, allowing requests to flow through between services.
-	ii.Open : 
+	i.Closed (Happy): In this state it operates normally, allowing requests to flow through between services.
+	ii.Open(Failure) : 
 			When the monitored metrics breach predetermined thresholds, signaling potential issues with the downstream service, the circuit breaker transitions to the Open state.
 			In the Open state, the circuit breaker immediately stops forwarding requests to the failing service, effectively isolating it.
 			This helps prevent cascading failures and maintains system stability by ensuring that clients receive timely feedback, even when services encounter issues.
-	iii.Half-Open : 
+	iii.Half-Open(Check if service is recovered): 
 			After a specified timeout period in the Open state, transitions to Half-Open state.
 			Allows a limited number of trial requests to pass through to the downstream service.
 			Monitors responses to determine service recovery.
@@ -834,6 +940,7 @@ So basically 2 annotations are used to discover the services -
 
 How u secure the microservices?
 I have used JWT token for authentication and authorization.
+(JWT) is divided into three parts: the Header, the Payload, and the Signature, which are Base64Url encoded and joined together with dots (.). The Header defines the token's type and the algorithm used for signing, while the Payload contains the actual information as "claims" about the user or entity. The Signature, created by hashing the encoded header and payload, ensures the token's integrity and authenticity.
 	
 which cloud provider u have used to deploy the microservices application?
 It is taken care by our build and release team.
@@ -1252,7 +1359,8 @@ U can even automate this migration steps as a part of your continuous integratio
 
 what is unique constraint in datbase?
 It indicate that the record is unique, it is basically applied on a column which will indicate that the value in that column is unique
-so any other record cannot have the same value for that column
+so any other record cannot have the same value for that column.
+A UNIQUE constraint in a database is a rule applied to a column or a set of columns in a table that ensures all values in that column or combination of columns are distinct. This means no two rows in the table can have the same value(s) in the constrained column(s).
 
 
 
@@ -1295,6 +1403,27 @@ so its like git add only.
 
 Write a code Using JavaStream to convert the given string into uppercase-
 
+String uppercaseString = originalString.chars() // Get an IntStream of character codes
+                                               .mapToObj(c -> (char) c) // Convert IntStream to Stream<Character>
+                                               .map(Character::toUpperCase) // Map each character to its uppercase equivalent
+                                               .map(String::valueOf) // Convert each Character back to a String
+                                               .collect(Collectors.joining()); // Join the individual strings back into one
+
+Java code to find evenodd?
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+        1. List<Integer> evenNumbers = numbers.stream()
+                                         .filter(n -> n % 2 == 0)
+                                         .collect(Collectors.toList());
+
+        List<Integer> oddNumbers = numbers.stream()
+                                        .filter(n -> n % 2 != 0)
+                                        .collect(Collectors.toList());
+2.Map<Boolean, List<Integer>> evenOddMap = numbers.stream()
+                                                      .collect(Collectors.partitioningBy(n -> n % 2 == 0));
+3. List<String> results = numbers.stream()
+                                     .map(n -> n + " is " + (n % 2 == 0 ? "Even" : "Odd"))
+                                     .collect(Collectors.toList());
 
 Adv of spring over springboot-
 Spring initializer present in springboot.
@@ -1325,6 +1454,11 @@ different status code-
 502 -> Issue with server
 403 -> Forbidden
 200 -> Everything is OK
+1xx Informational: 100 Continue
+2xx Success: 200 OK, 201 Created, 204 No Content
+3xx Redirection: 301 Moved Permanently, 302 Found, 304 Not Modified
+4xx Client Error: 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found
+5xx Server Error: 500 Internal Server Error, 502 Bad Gateway, 503 Service Unavailable
 
 
 Scenario to develop a rest API and fetch data from db so explain how you will code-
@@ -1659,7 +1793,7 @@ OR
     private List<Employee> employees;	
 
 
-We have used rlationship of::
+We have used relationship of::
 	@OneToOne(mappedBy = "loanAgainstMFEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true):-
 			mappedBy => It will handle the mapping with field "loanAgainstMFEntity" without creating a new column/table for this
 			fetch => Used to fetch by type eager means direct/automatically we get the result and type lazy(it is of default type) means on demand means we have to call get method to get data.
