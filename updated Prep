@@ -381,13 +381,15 @@ So main purpose of this is to serialize an object and whenever that is going to 
 So if a class definition changes suppose any fields are being added or removed or any methods are getting modified then in that case serialVersionUID also should be changed. So coz of this it helps that an object serialized with an older version of the class is not serialized with the newer version and that might not be compatible also. So just to track all this thing we use serialVersionUID.
 
 difference between Serialization and Deserialization ->
-Serialization - It's a process of converting an object into a format that can be stored or transmitted such as byte stream.
+Serialization -> It's a process of converting an object into a format that can be stored or transmitted such as byte stream.
 And these byte sream can then be save into a file or it can be send over a network or store in a database.
 Basically its about the objects state making it portable so whenever we want to port the object so we use serialization process
+An ObjectOutputStream is used to write the object to an output stream (e.g., FileOutputStream for files). The writeObject() method of ObjectOutputStream performs the serialization.
 for eg -> storing a java objects state into a file
 
-Deserialization - It's opposite of serialization
-If we want to retrieve the serialized object then we have to deserialised it first then we can read that object in same state
+Deserialization -> It's opposite of serialization
+If we want to retrieve the serialized object then we have to deserialised it first(byte stream is converted back into a Java object.) then we can read that object in same state
+The readObject() method of ObjectInputStream reads the byte stream and reconstructs the object. The returned object needs to be cast to its original type.
 
 
 What annotation/liberaries we use for serialization and deserialization?
@@ -504,6 +506,37 @@ A class implement both interfaces.
 We want to print value which is in default(common) method?
 Diamond problem -> compiler will throw compile time error and will ask forcefully override method and in that method say which interface method we want to call like interfaceA.super().method_name(); 
 
+We have interface A and interface B both have Same default method, class C is implementing both interfaces;
+We will get compiler error if class C does not override. else class can call A.super().m() or B.super.m().
+
+We have interface A  has abstract m() and interface B have default method m(), class C is implementing both interfaces;
+Default will be called here if we don't override anything.
+Also class can override but not mandatory, object call uses default method.
+
+We have interface A and interface B both have Same abstract method m(), class C is implementing both interfaces;
+class C must implement method m().
+
+We have interface A has static m() and interface B have default method m(), class C is implementing both interfaces;
+Here default is inherited, but static is not inherited.
+We can call via C class object so default will be called. Also we can call via interface of static as static(A.m());
+
+We have interface A and interface B both have Same static method, interface C is implementing both interfaces;
+It is not inheritted by class.
+C class must call using interface name as A.m() or B.m()
+
+We have interface A has abstract m() and interface B have static method m(), class C is implementing both interfaces;
+class C must implement abstract; static is ignored by instance.
+class C object calls class method, we can call static method interface by A.m();
+
+We have interface A has abstract m() and interface B have abstract method m(), and interface C have default method m() class D is implementing both interfaces;
+Default can be inherited if no conflict; class must resolve abstract.
+Compiler forces class D to implement abstract; default is optional.
+
+{
+1. Default - ready to use (inherited by class)
+2. Abstract - promise(class must implement, also default wins)
+3. Static - not inherited, call with interface name.
+
 Can we override and overload the static methods?
 In Java we can overload static method but we cannot override them. Coz static is something related to the class so just with the class.static method we can access it.
 
@@ -577,6 +610,8 @@ We have 3 types of loaders :
 2.Extension Loader -> It loads classes from the JRE
 3.Bootstrap loader -> It is core part of JVM loads
 
+JVM Architecture:
+
 
 Difference between loading and linking?
 Loading : when we create an object it gets loaded, i.e loading
@@ -626,6 +661,7 @@ Explain Functional interface with real life example(Predicate, funcion, consumer
 		4. Function - Input and OutPut. It accepts a single argument and returns a result.
 Built-In Java Functional Interfaces :
 Comparator, comparable, lambda	 expression, runnable, Callable are functional interface
+
 	
 What problem option class resolve in Java 8?
 It is used to avoid nullpointer exception.
@@ -1033,10 +1069,116 @@ It can be used in immuatbility of a variable as well.
 It is basically used for implementation of immutability.
 
 
-How to make immutable class-
+How to make immutable class(FPN)-
 First declare class as final.
 we can declare the variables as private and final.
 Then implement getter method only not setter method.
+1.Final class, Final fields
+2.Private fields(encapsulation)
+3.No setter methods/Functions.
+4.Defensive copy if mutable object present.
+eg -
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+public final class MyCar {
+
+    private final String model;
+    private final Set<String> machineParts; // Using a Set for machine
+
+    public MyCar(String model, Set<String> machineParts) {
+        this.model = model;
+        // Defensive copy for mutable Set in the constructor
+        this.machineParts = new HashSet<>(machineParts); 
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public Set<String> getMachineParts() {
+        // Defensive copy for mutable Set in the getter
+        return Collections.unmodifiableSet(new HashSet<>(this.machineParts)); 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MyCar myCar = (MyCar) o;
+        return Objects.equals(model, myCar.model) &&
+               Objects.equals(machineParts, myCar.machineParts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(model, machineParts);
+    }
+
+    @Override
+    public String toString() {
+        return "MyCar{" +
+               "model='" + model + '\'' +
+               ", machineParts=" + machineParts +
+               '}';
+    }
+}
+
+
+How to make Singleton class(PPG)-
+1.Private static instance
+2.Private constructor
+3.Get instance method
+ eg -
+ public class MyCar {
+
+    // Private static instance of the class
+    private static MyCar instance;
+
+    // Private variable to hold the machine name
+    private String machine;
+
+    // Private constructor to prevent direct instantiation
+    private MyCar(String machine) {
+        this.machine = machine;
+    }
+
+    // Public static method to get the single instance of the class
+    public static MyCar getInstance(String machine) {
+        if (instance == null) {
+            instance = new MyCar(machine);
+        }
+        return instance;
+    }
+
+    // Getter for the machine variable
+    public String getMachine() {
+        return machine;
+    }
+
+    // Setter for the machine variable (optional, depending on immutability needs)
+    public void setMachine(String machine) {
+        this.machine = machine;
+    }
+
+    // Example usage
+    public static void main(String[] args) {
+        // Get the first instance
+        MyCar car1 = MyCar.getInstance("Engine A");
+        System.out.println("Car 1 machine: " + car1.getMachine()); // Output: Engine A
+
+        // Try to get another instance with a different machine name
+        MyCar car2 = MyCar.getInstance("Engine B");
+        System.out.println("Car 2 machine: " + car2.getMachine()); // Output: Engine A (still the first instance)
+
+        // Modify the machine of the single instance
+        car1.setMachine("Engine C");
+        System.out.println("Car 1 machine after modification: " + car1.getMachine()); // Output: Engine C
+        System.out.println("Car 2 machine after modification: " + car2.getMachine()); // Output: Engine C
+    }
+}
 
 
 
@@ -1447,8 +1589,37 @@ Hibernate Workflow::
 	
 Note - for creating sessioin factory we are using singleton design pattern
 
-what is(difference between) Lazy and Eager fetching in JPA?
+explain transient, persistent and detached in JPA?
+There are mainly four main states of the Hibernate Lifecycle :
+1.Transient State -> An entity is in the transient state when it is newly created using the new operator and has not yet been associated with a persistence context (e.g., by calling EntityManager.persist())
+2.Persistent State -> An entity enters the persistent state when it is associated with a persistence context. This typically happens after calling EntityManager.persist() for a new entity or EntityManager.find() or EntityManager.merge() for an existing entity. Persistent entities are managed by the EntityManager, and their state is synchronized with the database. 
+3.Detached State -> An entity transitions to the detached state when it was previously persistent but is no longer associated with a persistence context. This can occur when the EntityManager is closed, the entity is explicitly detached using EntityManager.detach(), or the persistence context is cleared.
+4.Removed State ->  when the entity object is deleted from the database then the entity object is known to be in the removed state. It is done by calling the delete() operation. As the entity object is in the removed state, if any change will be done in the data will not affect the database table.
 
+eg -
+// Transient State
+Employee e = new Employee();     
+Session s = sessionFactory.openSession();
+e.setId(01);
+
+// Persistent State
+session.save(e);
+
+// Detached State
+session.close();  // The object is now detached
+
+// Removed State                  
+session.delete(e);  // The object is now removed from the database
+
+
+what is deadlock in JPA?
+A deadlock in JPA occurs when two or more transactions are blocked indefinitely, each waiting for a resource that is held by another transaction in the same set. This creates a circular dependency where no transaction can proceed.
+Causes of dead lock eg -> Concurrent Access to Shared Resources, Complex Transaction Logic
+Strategies to Mitigate Deadlocks in JPA eg -> Minimize Lock Duration, Reduce Transaction Scope: Break down large, complex transactions into smaller
+Identify and Analyze Deadlocks: Enable SQL logging in your JPA provider (e.g., eclipselink.logging.level.sql for EclipseLink or openjpa.jdbc.Trace for OpenJPA) to inspect the exact SQL statements causing the issue.
+
+what is(difference between) Lazy and Eager fetching in JPA?
+These strategies determine when related data is loaded from the database.
 
 We have used rlationship of::
 	@OneToOne(mappedBy = "loanAgainstMFEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true):-
