@@ -1,0 +1,199 @@
+package com.inm.sbi.lotus.cloudant.fundtransfer.Streams;
+
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import com.ibm.ws.webservices.xml.waswebservices.max;
+
+public class StreamTerminalOperations {
+
+	public static void main(String[] args) {
+		
+		//I.Collect
+		
+		/*
+		 * inside collect we have groupingby and partioningby and many more.......  methods
+		 */
+		System.out.println("perform squares of even elements and print them");
+		
+		List<Integer> liCollect = Arrays.asList(1,5,3,4,2,6,7,9);
+		
+		List<Integer> evenSquareList = liCollect.stream().filter(n -> n%2 == 0).map(n -> n*n).collect(Collectors.toList());// collect method
+		System.out.println(evenSquareList);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		//1. groupby
+		/*
+		 * groupingby function returns map so the return type or output will be map
+		 */
+		System.out.println("Group all the employees by the departmentt");
+		
+		List<EmployeStream> empstr = Arrays.asList(
+										new EmployeStream("Alice", "IT", 20000),
+										new EmployeStream("Nish", "Yono", 40000),
+										new EmployeStream("swati", "Yono", 190000),
+										new EmployeStream("Lalita", "Yono", 140000),
+										new EmployeStream("Komal", "Test", 80000),
+										new EmployeStream("kiran", "Test", 60000),
+										new EmployeStream("rahul", "Test", 60000)
+										);
+
+			Map<String, List<EmployeStream>> empByDept = empstr.stream()
+					.collect(Collectors.groupingBy(EmployeStream::getDepartment));
+			
+			empByDept.forEach((department, employelist) -> {
+				System.out.println("\nDepartment wise data "+department);
+				employelist.forEach(System.out::println);
+			});
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			//2. partitining by 
+			System.out.println("\nlist the employees having salary > 50k and < 50k");
+			Map<Boolean, List<EmployeStream>>	partitionedBySal = empstr.stream().collect(Collectors.partitioningBy(EmployeStream -> EmployeStream.getSalary()>50000));
+			
+			System.out.println("\nSalary > 50000 ");
+			partitionedBySal.get(true).forEach(System.out::println);
+			
+			System.out.println("\nSalary < 50000\n");
+			partitionedBySal.get(false).forEach(System.out::println);
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			//II.Min........... min uses comparator.naturalorder as an argument and it will return optional so return type will be optional
+			List<Integer> liMin = Arrays.asList(5,3,4,6,9,8,7);
+			Optional<Integer> minNum = liMin.stream().min(Comparator.naturalOrder());
+			
+			System.out.println("\n min number "+minNum+""+minNum.get());
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			//III.Max............it is same as min
+			List<Integer> limax = Arrays.asList(3,7,9,5,4,2);
+			Optional<Integer> maxNum = limax.stream().max(Comparator.naturalOrder());
+			System.out.println("\n max number "+maxNum+""+maxNum.get());
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			//IV.FindFirst.... after performing operation print 1st element
+			List<Integer> num = Arrays.asList(1,4,2,3,5,6);
+			Optional<Integer> firstelem = num.stream().filter(n -> n%2 ==0).findFirst();
+			System.out.println("\n find First even element : "+firstelem.get());
+			
+			
+			
+				
+			
+			
+		//V.AnyMatch....  it takes condition as an argument and return boolean as an output
+			List<Integer> anymatchboolean = Arrays.asList(1,4,5,7,8,9,3);
+			List<Integer> anymatchboolean2 = Arrays.asList(1,5,7,9,3);
+			
+			Boolean anymatch = anymatchboolean.stream().anyMatch(n -> n%2 == 0);
+			System.out.println("\n Any match return true  : "+anymatch);
+			
+			Boolean anymatch2 = anymatchboolean2.stream().anyMatch(n -> n%2 == 0);
+			System.out.println("\n Any match return false : "+anymatch2);
+ 			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		//VI.Count...... used to count number of elements present in stream and returns a long value.
+			List<Integer> countelem = Arrays.asList(2,1,4,6,7,8);
+			Long countstream = countelem.stream().count();
+			System.out.println("\n count elements : "+countstream);
+
+			
+			
+			
+			
+			
+			
+			
+		
+			
+			
+			
+		//VII.Sum........ used to perform direct sum operation in stream
+			/*
+			 * sum function can be applied only on intream
+			 */
+			
+			List<Integer> lisum = Arrays.asList(2,5,6,7,8,9,1);
+			int sum = lisum.stream().mapToInt(Integer::intValue).sum();
+			System.out.println("\n sum of stream values : "+sum);
+			
+			
+			
+	}
+}
