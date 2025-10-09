@@ -260,6 +260,7 @@ hashmap ->
 	
 concurrent hashmap -> 
 	thread safe, not allows null key and null values, performance is slow then hashmap
+	Before java 8 entire hashmap was locked so after java 8 they have introduced segmented locking for multiple threads
 
 remove duplicate from list and preserve its order -> 1. arraylist(items) 2. iterator(arraylist(set.add.arraylist(items)));[linkedhashset(items)]
 
@@ -363,6 +364,10 @@ volatile keyword ->
 	value of a variable will be modified by different threads, used in multithreading env. ,it ensures value visibility across the thread, Problem -> it doesn't provide automicity of read and write operation, it shows most recent value, to maintain automicity we need to use "automic" keyword.
 	Volatile ensures that the changes to a variable are immediately visibles to all threads in multiThreading.
 
+Does volatile keyword ensures/guarantee thread safety?
+	It resolves visiblitiy problem(latest value) so it is not thread safe.
+	so answer is No
+	
 Executor service ->
 	It is a class that helps in maintaining a pool of threads and assigning them tasks.
 	It provides methods to submit tasks, manage the life cycle of threads, and get the results of tasks.
@@ -749,6 +754,17 @@ JIT is present in JRE. It converts the .java class to byte class i.e .class so t
 Despite there is garbage collector in java y we might see the memory leaks?
 Sometimes the objects are not in use but it still points/refers to some point like null object so it leads to memory leak.
 
+How u will analyse memory leak? which tools and techniques u will use for analysing it?
+	I'll optimise the query like if we are using any like operator then we can use equalTo or join over there.
+	if we are using any where keyword then we can add index for the database so that it will speed up the things
+	we can use cache as well for database (if applications is querying frequently and the results are not changing frequently)
+	if memory leak is there then we can get the heap dump and see for any heap issue is there for eg - if we are using any static references those references are not cleared by any etl or anything
+	
+can we have memory leak even though we have garbage collection?
+		Yes, coz if we have
+		Thread
+
+
 only overriding equals is not enough - explain
 hashcode of object class is generated behind the scene and is used for comparison; which can have same/different values/objects so it fails to compare the equals values
 
@@ -860,7 +876,8 @@ Treeset having 2 below values
 2  adding object abc
 Now print output?
 runtime exception -> coz we added null as null values are not allowed in treeset.
-coz it uses comparator internally and which has compareto() method so null compare to any object will throw nullpointer exception at runtime.
+coz it uses comparator internally and which has compare() method so null compare to any object will throw nullpointer exception at runtime.
+A Java TreeSet uses either the Comparable interface or the Comparator interface to maintain its elements in sorted order.
 
 finally block will not execute if we write return statement as "system.exit()" at either in try or catch block.
 
@@ -1128,6 +1145,20 @@ String s1 = "Hello";
 String s2 = new String("Hello");
 if(s1.equals2) = True;
 
+
+How does java memory model impact the use of synchronise and volatile?
+JMM is how the JVM manages the multithreaded environment.
+Synchronised can be used on top of any method
+
+how CompletableFuture works?
+	CompletableFuture is a class in java.util.concurrent package that implements the Future and CompletionStage Interface. It represents a future result of an asynchronous computation. It can be thought of as a container that holds the result of an asynchronous operation that is being executed in a different thread. It provides a number of methods to perform various operations on the result of the async computation.
+	1. Whenever we are invoking the threads and doing the task usually it is done in async way. we invoke any task through executor service that will return future objects so we are implemening the callable interface then it will return for sure if u r implemening runnable interface then it will return void.
+	2.So when u r using the CompletableFuture u will get more fine grain access on it like complete the thing and wait for something, after getting result then u can apply kind of things method is there.
+	so u can perform further tasks on it.
+
+What are Phantom references?
+	These are just references that get and queued after the object is finalized but before memory is reclaimed. It is useful for managing resources when GC freeze memory
+	It is a kind of miscellaneous concept that we don't use it.
 
 Java Memory model -
 It is related to thread management.
@@ -1925,6 +1956,7 @@ Record Patterns
 Pattern in switch
 
 Virtual Threads
+	Virtual threads are managed by JVM instead of OS.
 	Number of thread which you can create depends on your CPU memory is called virtual Threads.
 	Virtual Thread is not tied to your os thread or not tied to only one OS Thread.
 	Virtual Threads can be used when we need high throughput concurrent Applications.
@@ -2157,3 +2189,56 @@ System.out::println => It is commonly used with functional interfaces, particula
 	@ColumnTransformer(read = "decrypt_char(BEN_ACCOUNT_NO,'" + Utility.ENCRYPTION_KEY + "')", write = "encrypt(?, '"
 			+ Utility.ENCRYPTION_KEY + "')")
 			
+			
+Kafka works with poll mechanism
+RabbitMQ works with push mechanism
+
+Apache Kafka is an open-source distributed event streaming platform used by thousands of companies for high-performance data pipelines, streaming analytics, data integration, and mission-critical applications.
+
+Apache Kafka definition:
+	Apache kafka is like a communication system that helps different parts of a computer system exchange data by publishing and subscribing to topics.
+	Sender ===Publish===> Apache Kafka <=== susbcribe == Receiver 1, Receiver 2, Receiver3..
+	
+Why Apache Kafka?
+		1.High Throughput
+		2.Fault Tolerance(Replication)
+		3.Durable
+		4.Scalable
+		5.Used in Zomato, LinkedIn, Netflix, etc
+		
+Kafka Architecture:
+
+Without Zookeeper kafka will not work.
+
+Kafka.config file needs o be created for configuration(topic,)
+
+Kafka service file needs to be created for kafka template
+
+Create consumer and producer configuration file for Kafka server.
+
+Installation :
+	1.Download Kafka zip file from official website(apache kafka)
+    2.Extract file
+    3.Start Zookeeper
+    4.Start Kafka Server
+	
+	
+What is broker?
+	The producer and consumer do not communicate directly, they communicate through a broker
+	Producer => Kafka broker <= Consumer
+	
+What is Kafka Cluster?
+	Group of node/server.
+	Each server runs a instance of kafka broker
+	
+What is kafka topic?
+	
+How to start kafka?
+
+
+Without zookeper we can start kafka, zookeper stores the log
+kafka console producer
+kafka console consumer
+
+
+AWS
