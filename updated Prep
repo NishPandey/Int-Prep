@@ -2241,4 +2241,73 @@ kafka console producer
 kafka console consumer
 
 
-AWS
+What is Unit Test?
+	A unit test is a way to test the smallest parts of your code, such as individual methods or classes, to ensure they work as expected
+	
+Why Unit Testing is important?
+	1.Fast feedback: Unit tests are quick to run and can immediately tell you if something is broken
+	2.Early bug detection: Catch bugs at the method level before they propagate.
+	3.Easier to maintain: They help ensure future changes don't break existing functionality
+	4.Increases confidence: you can refactor your code with the confidence that everytthing sill works.
+	
+Using Junit5 ::
+We have two folder in our project:
+	1.main : where we write our code
+	2.Test : where we write our test cases
+
+We need to have dependecy - "spring-boot-starter-test" package to be added in pom.xml which will bring junit5, mockito, etc for ur testing.
+To create a test for particular service testing, press "ctrl+shift+t" and it will create a test for u.
+	1.Inside test class write/create a meaningful method so that other person can also read ur test cases.
+	2.And above this mehod write "@Test" which will come from junit.jupitor.api.Test pkg
+	3.Now create object of the class whose method needs to be added, now call that method for testing using classObject.method name.
+	4.Mockito is used to create mock objects for testing the particular method of Junit.
+		by using "@Mock" coming from mockito.mock pkg above class object creation we can create it as mock object which will be passed as an object for testing
+		To make mockito wroking we have to use "@Extendwith(MockitoExtension.class)" which will initialise the code class for mock objects creation
+		We use "@InjectMocks" to inject those object in our test method
+		Use "Mockito.when(repo.save call).thenReturn(class object)" for checking passing of data without saving it in actual db repo
+	5.Use assertion "Assertions.assertEquals(what is accepted, what is given)" for actual testing purpose
+		use "Assertions.assertNotNull(which product should not be null)" to check null check means object(Product) passed should not be null.
+		use "Assertions.assertTrue(which condition)", "Assertions.assertFalse(which condition)" checks if its true condition or not?
+	Note: use static import of assertions and mockito so that we can directly write methods like - assertNotNull, when, etc
+		
+So basically testing happens in 3 steps:
+	1.initialise data
+	2.write the mock conditions
+	3.assertions
+
+
+Unit Testing LifeCycle Steps :
+	1."@BeforeAll" : is used or setting or testing before our test cases condition[Class Level Setup]
+			Note : 
+				1.beforeall method should be "Static" method for execution
+				2.This @beforeall will be executed/invoked only once that's why it is used for "class level setup"
+				3.This will be executed only once but it will be executed before start of all test cases
+				4.This is mainly used for whenever we need database connection or there are some data/object which will be used/shared by all test cases then we can use this annotation.
+
+	2."@BeforeEach" : Setup for Each Test
+			1.Used for setting up of dynamic data for each test case before their execution
+			
+	3."@Test" : Test Execution
+	
+	4.@AfterAll : Class Level Cleanup
+			1.If u want to destroy db connection which u have started at the start of execution i.e @BeforeAll then we can use this.
+			
+	5.@AfterEach : Cleanup
+			1.After the execution of test if we want to reset some values then we use it.
+	
+	
+Mocking void methods using doNothing() and Verify() : 
+	1.doNothing().when(repo/class name).deleteById(1)[method name] :  used to say that do nothing when this method is called.
+	2.Mockito.verify(what is called, verification mode).deleteById(1)[method to check] : Used for verifying the method which will run once but will not give any output eg - delete method which does not return anything
+
+Testing private methods :
+	1.Using Java Reflection method -> 
+			a.class.getDeclaredMethod() => to get access to private method using reflection method.
+			b.variable.setAccessible(true) => to make accessible using reflection method.
+
+Testing exceptional scenarios :
+	1.assertThrows(accepted type, executable), here in 2nd argument we use lambda expression eg : "assertThrows(RuntimeException.class, () -> classname.methodname(argument);"
+
+	
+AWS Ec2
+
