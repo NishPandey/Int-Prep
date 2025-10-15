@@ -39,6 +39,15 @@ Scalability : For monolithic we have to scale whole application but for microser
 Advance Technology : We have to use single technology for developing whole application, we cannot change it but in microservices we can use java, python, etc technology different different services and different databases can be used.
 
 
+How does thread scope work in Spring can it be use in async methods?
+Thread scope ties a beans lifecycle to a single thread, it cannot be directly used in async methods since async may run on different threads.
+Spring's "thread scope" allows for the creation of beans that are scoped to the current thread of execution. This means a new instance of a thread-scoped bean is created for each new thread, and that instance is then reused within that specific thread for its entire lifecycle. This can be useful for managing thread-specific data or resources.
+
+What is NoSuchBeanDefinitionException?
+Whenever the applicationContext is not able to find the bean which is defined in the configuration class then we get this exception.
+It is a runtime exception in the Spring Framework.
+The most common cause is that the requested bean has not been defined in the Spring configuration (e.g., XML configuration, Java-based @Configuration classes, or component-scanned classes).
+It is thrown by the Spring IoC (Inversion of Control) container 
 
 
 custom annotation = @retention
@@ -52,6 +61,19 @@ We can define custom annotation and annotate it with @component or another stere
 @qualifier :
 @primary : 
 
+Lets say u have declared @ConfigurationProperty annotation but it's returning null values, what could be wrong in this situation?
+It won't be getting value exactly from the configuration class so it might be pointing to the correct configuration but the value assigned might be having issue.
+Also several issues could be at play like -
+MissingEnableConfigurationProperties could be the reason so no component annotation on class; no setter, getter injection
+
+what happens if u define a bean in a multiple configuration files with the same name?
+If we define bean with same name in multiple configuration files then an ambiguity can occur.
+And spring won't be understanding which one to pick up and errors might come up
+To handle this we have concept of qualifier and Primary.
+@Primary -  If you have multiple beans of the same type and one should be the default choice when no specific qualifier is provided, mark it with @Primary.
+@Qualifier - you can use @Qualifier to specify which named bean to inject
+@Profile- annotation to activate specific configurations based on the active profile.
+ 
 Bean life cycle?
 1.	Bean Definition Loading: 
 Spring reads the bean definitions from configuration metadata (e.g., XML, Java annotations, or Java configuration) to understand how to create and configure the beans.
@@ -110,6 +132,28 @@ Did u faced any Circular dependency issue and how u resolved it?
 A circular dependency occurs when two classes depend on each other. For example, class A needs class B, and class B also needs class A. 
 we can address the problem by changing the way our beans are wired – to use setter injection (or field injection) instead of constructor injection. This way, Spring creates the beans, but the dependencies aren't injected until they are needed.
 
+How does spring resolves circular dependecy at run time with proxies?
+For resolving circular dependecy basically deadlock, the best thing which we can do is lazy initialization instead of doing eager initialisation. i.e whenever particular object is needed then only initialise
+Another thing we can do is use Setter or Field Injection instead of Constructor Injection: to resolve circuilar dependecy at run time.
+Note: Here constructor injection fails coz both beans require each other before being fully constructed 
+
+what is lazy initialization in spring boot?
+we can use in the circuilar dependency problem like suppose a class A is dependent on class B similarly class B is dependent on class A so in that case we face circular dependecy so in this case we can use lazy initialization or we can inject the dependecy via settter injection.
+
+what is the difference between 500 and 404?
+500 is internal server error
+404 is error not found
+503 is forbidden
+
+what is the difference between save and saveAndFlush?
+Save() schedules insert update but may not immediately hit the db but saveAndFlush forces an immediate flush.
+The main difference is that save() stores changes in an in-memory buffer, while saveAndFlush() writes those changes to the database immediately. 
+saveAndFlush() forces a database write, making the data immediately available, 
+whereas save() waits for the transaction to commit, which happens automatically at the end. 
+
+what happens if u call a lazyloaded relationship outside a transaction?
+Accessing a lazy-loaded relationship outside of an active transaction or session will cause an exception. The exact exception name depends on the ORM framework being used, for example: 
+
 Difference between JPA repository and CRUD repository?
 In Spring Data JPA, CrudRepository and JpaRepository are interfaces that provide different levels of functionality for data access.
 JPA repository :
@@ -160,6 +204,19 @@ Bearer token has issue and expiry time, subject, user email id and password.
 
 How 2 microservices communicate with each other?
 Microservices communicate using two main patterns: synchronous communication (like HTTP/REST APIs or gRPC) where one service waits for a direct response, and asynchronous communication (using message brokers such as Kafka or RabbitMQ) where services send messages and continue processing without waiting for a reply. The choice between these methods depends on whether a real-time response is needed or if decoupling and event-driven responses are more appropriate.  
+
+
+what is the Purpose of spring boot dev tools?
+basically it's a actuator which is used for -
+monitoring spring boot application
+Log monitoring
+Memory monitoring
+Profile/enviornment monitoring we can do.
+
+When should it(spring boot dev tools) would not be used?
+In small applications like monolithic we can avoid using spring dev tools.
+Also it should not be used in production because it may impact the performance and security.
+
 
 caching(escache, reddish, haaslecast) =  @cacheable, @cachboot, @cachevict
 
@@ -226,6 +283,10 @@ Idempotency ->
 	Commonly used in REST APIs and HTTP methods but also in general Java methods.
 	Eg - GET, PUT, DELETE.(POST is not idempotent)
 	A method is idempotent if calling it multiple times with the same parameters doesn't change the result beyond the first call. eg setting balance method in account class. (increment() method is not idempotent)
+
+How to implement idempotency in a post API in a payment service?
+with the patchmapping we can implement idempotecny.
+We could use idempotecny key like UUID per request, through which we can store processed key in db and cached if the same key come again returns the stored responses instead of reprocessing it.
 
 object class is the super class of all java classes and its present in java.lang package; methods -> equals, hashcode, clone, noify, notifyall, tostring, wait
 
@@ -309,6 +370,11 @@ ConcurrentHashMap in Java is a thread-safe implementation of the Map interface, 
 To avoid ambiguity in ConcurrentHashMap null is not allowed as a key or value. 
 It uses internal segmentation in a lock; concurrent reads and updates without blocking the whole map.
 
+Lets say u have a concurrentHashMap and u put null as a value, so what happens?
+In concurrentHashMap we can't have null values so it will we showing error, we can't have null values coz its a multithreading.
+ConcurrentHashMap is generally synchronised and also its a fail safe iterator so it avoids null value.
+And also to avoid ambiguity in current get, put operation.
+
 
 What is SynchronisedHashMap?
 "synchronized HashMap" refers to a standard HashMap that has been made thread-safe by wrapping it with synchronization mechanisms. This is typically achieved using the Collections.synchronizedMap() method.
@@ -325,6 +391,12 @@ How hashmap works.
 1.use hash function to get the hashcode
 2.initialise the bucket, means it will have formula of hashcode mode arraysize, we will get the reference number
 3.storing in the bucket, whatever hashcode key is found that key we will store it there.
+
+internal working of hashmap in java8 and how does it differ from java 7?
+Internally works on buckets which consist of set of arrayList basically arrays and internally linkedList.
+So whenever a key value is passed, it basically calculates the hashcode of that particular key value and at the bucket at which is storing at that particular bucket only.
+And if hashcollision is happining or if two values are having same hascode that time internally it is creating linkedlist and storing the values 
+Enchancement in java 8 was after the maximum limit of bucket is reached then instead of storing it linkedlist format it is storing in a balanced tree and due to this we are getting the time complexity much reduced
 
 
 what happens if 2 different key have same hashcode-
@@ -367,7 +439,22 @@ volatile keyword ->
 Does volatile keyword ensures/guarantee thread safety?
 	It resolves visiblitiy problem(latest value) so it is not thread safe.
 	so answer is No
-	
+
+do u know about ForkJoinPool?
+it is basicallu used for parallel taks or recursive task.
+where a large task is broken into smaller subtasks ("forked"), executed in parallel across a pool of worker threads, and their results are combined ("joined") back together. The pool itself manages worker threads, and a "work-stealing" algorithm helps keep threads busy by allowing idle ones to take tasks from other, busier threads. 
+A "fork" is the process of splitting a large task into smaller, independent subtasks.
+A "join" is the process of combining the results of the subtasks to get the final result for the parent task.
+The ForkJoinPool is a specialized thread pool designed to manage the execution of these forked tasks.
+
+
+How does java insures data visibility of shared data in multithreading without using synchronized?
+use volatile keyword and JMM
+
+Explain the use of ThreadLocal?
+It stores the data isolated per thread in the request context
+used to create variables that are local to each thread, meaning each thread gets its own unique copy. This is useful for storing thread-specific data like user sessions or database connections without needing to pass them as parameters through every method call. Its primary use is to achieve data isolation and improve thread safety by preventing threads from interfering with each other's data
+
 Executor service ->
 	It is a class that helps in maintaining a pool of threads and assigning them tasks.
 	It provides methods to submit tasks, manage the life cycle of threads, and get the results of tasks.
@@ -510,6 +597,9 @@ In which package comparator and comparable are found?
 comparable - java.lang
 comparator - java.util
 
+what happens if a class implements comparable and u use a custom comparator in sorting, which one takes precedence?
+overriding happens of the custom comparator.
+
 what is Annonymous class?
 An anonymous class is a class without a name that is defined and instantiated in a single expression. It is a type of inner class used when a specific, one-time implementation of an interface or an abstract class is required, or when overriding a method of an existing class for a single instance. 
 Eg ->
@@ -586,6 +676,14 @@ Applies an index only to a subset of rows in a table, based on a specified filte
 Pagination in SQL-
 	The main concept of the Paginating results in SQL involves the use of the 'LIMIT' and 'OFFSET' clauses in SQL queries. By the name of the clause, we can know that it simply limits the number of rows.
 The 'LIMIT' clause is mainly used for restricting the number of rows that are returned in a set of results. Here the 'OFFSET' clause is to specify the starting point within the result set.
+
+
+How do u ensure performance in large paginated queries using spring data JPA?
+So 1st thing we need to care about large pagination is proper pagination should be implemented.
+Also proper caching should be done like proper caching implementation should be done.
+Doing query optimization by using indexing 
+Also indexing should be handled.
+Also by indexing primary key index or other index can be done to ensure performance in large pagination queries.
 
 				
 Rest API and SOAP?
@@ -690,11 +788,12 @@ We cannot override static method as static method belongs to class, not to any i
 Can we call both super and this in the same constructor?
 No, coz both must be the  1st  statement in the constructor so u can only use one of them.
 
-What happens internally when u create an object in java?
+What happens internally when u create a new object in java, how memory is allocated and managed?
 When we create an object we get the reference in heap memory which is used for storing purpose, means object is created in heap memory and we get the storage.
 When we create an object the class is loaded first in JVM.
 Memory is assigned in the heap memory.
 Default initialisation, constructor call will be there.
+Once the reference is removed from the heap memory may be it is moved to the stack and then it is used from the stack until unless it is not collected by the garbage collector.
 
 Can constructors be overridden in java?
 we can have multiple constructor(overloading).
@@ -779,9 +878,55 @@ custom marker interface- how to create?
 define empty interface(marker interface) then have 1 class which will implement marker interface then 1 class to check if a class is implementing marker interface.
 
 What is functional interface?
-functional interface are those interface that contains only one abstract method.
-OR A functional interface can have multiple default or static methods with implementations, it is the presence of exactly one abstract method that defines it as functional. 
+functional interface are those interface that contains only one abstract method before java 8.
+After java 8 functional interface can have multiple default or static methods with implementations, it is the presence of exactly one abstract method that defines it as functional. 
 eg - Comparator, comparable, runnable, Callable are functional interface
+and generally this interface is used in writing the lambda expressions.
+eg - predicate, consumer, etc are functional interface.
+
+whats the difference between consumer and function?
+consumer basically consumes the input and it does not return anything
+Function basically transforms input to output.
+
+can we use a consumer in stream().forEach()?
+yes we can use.
+a Consumer is explicitly designed for use with Stream.forEach().
+
+Why Optional.get() method is dangerous?
+suppose we have a list of integer and we do not have any even number and we are filtering the even number and storing it in optional and will perform the get operation on that then it will throw an exception.
+
+can optional we use for field in an entity class?
+yes we can use.
+
+What are the types method references?
+static methods, instance methods of a particular object, instance method of an arbitrary object, constructor reference.
+The four types of method references are:
+static method references, instance method references for a particular object, instance method references for an arbitrary object of a particular type, and constructor references. These references act as a shorthand for lambda expressions by pointing to a method or constructor without explicitly invoking it. 
+
+
+what is PSVM?
+public is a access modifier
+static is a keyword which ensures that this method can be called without creating an object of a class or through class name.
+void is a return type which means that it will not return anything and main is the name of the method and it will accept the string array of argument.
+
+
+difference between static and default method in interface?
+if the method is default then we can directly call it with the help interface.methodname
+if the method is static then the class which is implementing that interface with the help of that class we can call that
+eg:
+interface MyInterface - is having staticMethod, defaultMethod, abstractMethod
+MyClass implements MyInterface and overrirdes - defaultMethod, abstractMethod
+main class -  InterfaceDemo : calling all methods.{
+// Invoking static method
+        MyInterface.staticMethod(); 
+
+        MyClass obj = new MyClass();
+        // Invoking default method (overridden version)
+        obj.defaultMethod(); 
+        // Invoking abstract method
+        obj.abstractMethod(); 
+}
+
 
 
 can we write functional interface without abstract method?
@@ -804,10 +949,23 @@ It has so many inbuilt methods - like isempty(), isPresent(), .orElseThrow() ...
 Difference between map and flatmap?
 Map - it returns a stream ; it is one-to-one mapping ;
 FlatMap - it returns a stream of streams ; it is one-to-many mapping ;
+suppose we have a list of integer and we want to multiply it by 2 for every element of integer then will use map.
+Suppose we have a list of list of integers and we want to get the complete list in the single list then we can go with the flatmap.
+
+how can reduce cost performance issues on parallel stream?
+parallel reduction may produce incorrect result.
+
 
 Why do we usually avoid many to many direct mapping in large enterprise projects/applications?
 its not a good practice coz there are multiple large amount of data
 
+Real or practical example of many to one?
+In banking application we can use this annotation.
+example- we can have 1 credit card which can be provided to many customer based on their transactions or their transaction limit.
+
+
+What happens when u delete a parent entity with a @oneTomany annotation cascadeType set to all?
+Whole even the child class will also get deleted or impacted since the cascadeType is all.
 
 In which scenario you would prefer flatmap?
 extracting words from a list of sentences.
@@ -842,22 +1000,42 @@ Can we use 2 same url calling from different requestMapping?
 Yes
 
 
-Difference between Valid and Validated?
+Difference between Valid and Validated annotation?
 valid - @Valid is part of the standard Java Bean Validation API (JSR-303/JSR-380). This makes it a standard, portable solution for validation across different Java EE environments.
 Validated -  @Validated is a Spring Framework-specific annotation. It extends the functionality provided by @Valid.
+Like if we take the input from the user and request reaches to the controller layer and we uses @valid annotation their to check the value of what the user has provided the data if it is valid then we process the request for the response and it gives a appropriate response to the user.
 
+what happens if a validation fail in a requestbody object?
+It will throw an exception and we can handle the exception.
+Generally generic exception would be MethodArgumentsNotValidException
 
 Can we have multiple @ControllerAdvice? Yes by using base package -> eg: @ControllerAdvice(annotations = RestController.class, basePackages = "com.example.admin.controllers")
 ControllerAdvice is mainly used to handle global exception
 We can write only one controllerAdvice and multiple exception handlers.
 @ExceptionHandler is used to handle the local exceptions
 
+Can ControllerAdvice handle exception for a single controller only?
+Yes, while @ControllerAdvice is primarily designed for global exception handling across an entire Spring application, it can be configured to target specific controllers
+eg -  
+@ControllerAdvice(annotations = MySpecificControllerAnnotation.class)
+@ControllerAdvice(basePackages = "com.example.app.specificcontrollers")
+
+What's the difference between rest and mvc controllers?
+MVC Controllers: are for generating views (HTML) for human users.
+REST Controllers: are for providing data (JSON/XML) for programmatic consumption by other applications.
+
 
 Difference between returning ResponseEntity and returning an Object/String through RestAPIs?
 ResponseEntity - it becomes generic return type like we write it for ? as we don't know what will this method will return so we use ResponseEntity.
 We can send HTTPSTATUSCode, we can send headers as well in response entity.
-Object/String - 
+Object/String - It will return data only (JSON)
 
+What happens if we overlap requestMapping annotation paths in multiple controller what happens?
+There will be ambigious mapping exception at start up time.
+
+whats the difference between class level and method level RequestMapping?
+At class level we define the base url @RequestMapping("/users")
+At method level we define the endpoint url basically consist of @GetMapping, @PutMapping, @PostMapping
 
 What is/does BindingResult?
 BindingResult provides a centralized and standardized way to capture and manage both data binding and validation outcomes, enabling robust error handling and a better user experience in Spring Boot applications.
@@ -870,6 +1048,21 @@ used to integrate changes from one branch into another by moving or combining a 
 Git cherraypick?
 When we want to cherry pick from particular branch then we use cherry pick.
 It allows you to select a specific commit from one branch and apply its changes to another branch as a new commit. This is useful when you need to incorporate a particular change without merging the entire source branch. 
+
+Suppose u r asked to store github secrets or CI securily, what should be ur approach?
+So I have been using microsoft Azure cloud.
+So microsoft azure is having key voult feature with which we can get the secret key generally and also we can store the secrets or github secrets in the particular key voult and whenever it is needed we can allow proper access based on proper authentication of the makeid and we can allow it to access that.
+
+Suppose ur applications response time suddenly degrades in production, so how do u profile and fix the bottleneck?
+First i'll find the root cause what is causing this failure before profiling and fixing.
+may be i have to analyse long running query or some response is coming slow in the payload then after that
+I need to handle the long running query and the transactions also i need to check if its running long
+After that to handle the bottleneck first i have to replicate it in our dev environment and fix the issue which is coming.
+So for fixing this i can optimize the query or may be i can reduce the payload may be instead of all the details in a single API i can define 2 separate API.
+Also i can use caching mechanism as well.
+So these are the things we can use for handling the slowness in our applicaion.
+
+
 
 Treeset having 2 below values
 1	adding null, 
@@ -941,6 +1134,13 @@ interservice communication in microservice(how 2 microservice communicate with e
 	2. async -> 1. message broker(rabbit mq, kafka)- calling method does not wait for response and it just move after creating/producing data ; and 2. messages and events
 
 
+In a microservices whats the difference between resttemplate and webclient?
+Both are used for communication between microservices.
+I have used restTemplate
+Resttemplate is used for synchronous communication 
+WebClient is used for asynchronous communication
+but new spring boot projects prefer webclient for better scalibility for high load scenarios due to non blocking property and characteristics.
+
 what is synchronous and asynchronous way of communication in microservices?
 Synchrounous communication-
 Synchronous communication means u r performing the operations sequentially, 1 transaction should be completed before proceding with another thransaction
@@ -956,6 +1156,17 @@ So basically 2 annotations are used to discover the services -
 	@EnableEurekaServer - It is used over the class where ur service will act as a eureka server.
 	@EnableEurekaClient - Used to make sure that this service act as a client and this service will be registered with ur eureka server and that eureka server url can be mentioned inside ur application.properties file so that it will register with that particular server
 	
+
+If a microservice goes down under sudden load, what checks would u perform?
+First i'll check the memory if it got overloaded or not.
+I'll check if proper load balancer is implemented or not
+I'll checks proper logs which API or 3rd party API or which service is failing
+I guess memory and load balancing check is most important.
+
+Suppose u r calling 3 microservices in parallel 1 microservice fails, what's the best drive startegy to apply?
+we can implement is ... based on scenario we can implement.
+But 2 things are there 1 is circuit breaker we can implement(check response if proper then circuit breaker will go to the closed state and again it will work finally) and another one is we can implement saga pattern{normal)(if failure occurs in 3rd microservice then we can rollback to the previous state or 1st microservices)
+
 
 How u secure the microservices?
 I have used JWT token for authentication and authorization.
@@ -1042,6 +1253,11 @@ So it is preferred to use at method level coz at method level we will come to kn
 
 On remote service failing how you handle rollback transactional-
 Compensation transaction/distributed transaction pattern like SAGA. so we could implement SAGA Pattern here.
+
+tell the purpose of using transactional annotation?
+We can ensure the asset properties.
+for eg if from 1 account the amount is being debited and credited in another account and we want to perform the update for both the account that should be done or either none of the done.
+so that can be put it in a transaction and it ensures that every operation will be executed or none will be executed.
 
 Notification system-
 text notification through ....
@@ -1203,6 +1419,16 @@ There r 2 ways for achieving abstraction -
 I generally used interface for abstraction in java 
 
 
+Can a lambda expression acess a non-final local variable?
+No, lambda expression cannot access non final local variables.
+
+
+what happens if u try to modify local variable inside a lambda?
+It will give a compile time error coz it belongs to the local block of that and it breaks the effectively final rule.
+ 
+Inside a lambda expression, can a lambda expression throw a checked exception?
+yes it can throw but the functional interface method must declare the exception.
+
 what is interface?
 Interface is a contract where the class that implements interface has to bind the interface 
 
@@ -1211,6 +1437,28 @@ Yes, we can assign its value to another variable like int b = a;
 But we cannot change the value of "a".
 So assignment can be done but the value cannot be changed.
 
+What design pattern u have followed?
+We are following basic design patterns like-
+Dependency Injection (DI)
+Immutability
+Singleton pattern
+
+Are u following SOLID principles:
+use SOLID principle as a guideline not hard rules as it can increase the complexity of our code.
+
+How spring helps OPEN CLOSED principle?
+by using dependency injection, interfaces, and abstractions to enable extension without modification.
+So, Through dependency injection interface based design we can allow the new beans for implementation to be added without modifying the existing code so that's how spring help to achieve open/colsed principle.
+
+
+
+Suppose rectagle has setheight, setweidth methods; if square extends rectangle, does it voilet LiskOV substitution principle?
+yes, coz square cannot not behave proper substitue for rectangle since it affects the setting of height and width too.
+violating the Liskov Substitution Principle (LSP).
+
+suppose we have a base repository and user repository that overrides the methods with extra validations, can that violating the Liskov Substitution Principle (LSP)?
+yes it will violate coz if overridden method changes the expected behaviour or contract of the base class so that's why.
+
 
 Use of Final keyword-
 It is used to make class immutable.
@@ -1218,6 +1466,11 @@ If we declare a variable as final then we cannot change its value.
 It can be used in immuatbility of a variable as well.
 It is basically used for implementation of immutability.
 
+Difference between final and immutable?
+final is a keyword provided by java which is used to mark the class or variable.
+we don't want to change the value of a variable or do not want child class to acess the parent class then at that time we mark it as final.
+Immutable is a design pattern provided/defined by java where if you dont want to change the behavior of a object or may be object that time we prefer immutable.
+generally String is one of the immutable classes provided by java and we can also create our own immutable classes by ourself
 
 How to make immutable class(FPN)-
 First declare class as final.
@@ -1837,7 +2090,18 @@ We have used relationship of::
 	@one to many
 	@many to one
 
+@ConditionalOnProperty: 
+	
 
+How would u enforce uniqueness across multiple field in a JPA entity?
+@UniqueConstraint annotation is used within the @Table annotation. This configuration instructs the underlying database to create a unique index on the specified columns, ensuring that no two rows in the table have the same combination of values for those columns
+eg - 
+@Entity
+@Table(name = "product_inventory", 
+       uniqueConstraints = { 
+           @UniqueConstraint(columnNames = {"productId", "serialNumber"}) 
+       })
+	   
 
 try with reource::
 	In this try method resource is passed as an argument in try and the resource automatically gets closed.
@@ -2307,6 +2571,12 @@ Testing private methods :
 
 Testing exceptional scenarios :
 	1.assertThrows(accepted type, executable), here in 2nd argument we use lambda expression eg : "assertThrows(RuntimeException.class, () -> classname.methodname(argument);"
+
+
+Difference between mockbean and mock annotation?
+Both are used for creating mock objects with Mockito.
+MockBean : it is generally used in spring boot concept like whenever we want to mock a bean or create a bean at that time we use mockbean. So basically it regesiters some mock bean in our application context nd replacing the actual bean.
+Mock : for mocking a value or getting some data in our test case we mock some values or we use mock in junit.
 
 	
 AWS Ec2
