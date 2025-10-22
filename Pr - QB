@@ -126,7 +126,6 @@ Unit Testing:
 •	rest status code
 •	Structure of restController
 •	Header conntent type
- 
 •	Springboot autoconfiguration, how microservice starts up, 
  
 Kafka:
@@ -148,11 +147,11 @@ AWS:
 Scenario:
 Students: Name and List of subjects (List<Subject>).
 Subject: Subject name and Marks.
-Create 9 objects of students with different subjects and marks.
-Now, the expectation is to write a logic/method that should return the top 3 students for each subject.
+• Create 9 objects of students with different subjects and marks.
+• Now, the expectation is to write a logic/method that should return the top 3 students for each subject.
  
-how to retrieve 100gb of data from db at once
-how to process 1 million record
+• how to retrieve 100gb of data from db at once
+• how to process 1 million record
  
 Database:
  
@@ -163,46 +162,361 @@ Q1)no of employees working in each department, location
 Q2)Top 5 highest paid employees from each department
  
 //Database question
-Different types of joins
-Use of self join
-Use of Indexing and partitioning
+• Different types of joins
+• Use of self join
+• Use of Indexing and partitioning
  
-Get 3rd highest salary
-Get duplicate names
-Inner join vs Outer Joins
-why indexing is imp and what criteria used for this
- 
-Difference between Relational SQL and NoSQL databases like MongoDB
+• Get 3rd highest salary
+SELECT DISTINCT Salary
+FROM Employees
+ORDER BY Salary DESC
+LIMIT 1 OFFSET 2;
+
+SELECT MAX(Salary)
+FROM Employees
+WHERE Salary < (SELECT MAX(Salary)
+                FROM Employees
+                WHERE Salary < (SELECT MAX(Salary)
+                                FROM Employees));
+
+
+
+
+• Get duplicate names
+SELECT Name, COUNT(*) AS Occurrence
+FROM YourTableName
+GROUP BY Name
+HAVING COUNT(*) > 1;
+
+
+
+
+
+• why indexing is imp and what criteria used for this
+Importance:
+i.Speeds up queries (WHERE, JOIN, ORDER BY)
+ii.Reduces full table scans
+Criteria to choose columns for indexing:
+i.Frequently used in WHERE clause
+ii.Frequently used in JOIN conditions
+iii.Columns used in ORDER BY or GROUP BY
+iv.Columns with high selectivity (unique values)
+
+
+
+
+• Difference between Relational SQL and NoSQL databases like MongoDB
+Feature	             SQL (Relational DB)	                   NoSQL (MongoDB)
+Schema	              Fixed schema	                          Flexible schema
+Data Model	          Tables with rows/columns	              Document, Key-Value, Graph
+Query Language	      SQL	                                   Mongo Query / JSON query
+Transactions	        ACID support	                          Limited / Eventual Consistency
+Scaling	             Vertical scaling	                      Horizontal scaling
+
+
+
  
 Orders { Id, CustomerId, Amount }, Customer { Id, Name }
 • Write SQL Query to fetch all order IDs with their customer name
+SELECT
+    O.Id AS OrderId,
+    C.Name AS CustomerName
+FROM
+    Orders AS O
+INNER JOIN
+    Customer AS C
+ON
+    O.CustomerId = C.Id;
+
+
+
 • What are SQL Joins
+Joins combine data from two or more tables based on a related column.
+Types: INNER, LEFT, RIGHT, FULL, CROSS, SELF
+
+
 • Difference between Inner Join and Outer Join
+Feature	                    Inner Join	                                 Outer Join
+Return                      Rows	Only matching rows	                    Matching + unmatched rows
+Null Handling	              No NULL for unmatched	                      NULL for unmatched side
+Use Case	                   Exact matches	                              Include unmatched rows
+
+
 • Write SQL to find the top 3 purchasers by their cumulative order amount
- 
-coalesce function
-internal working of index in sql
-ddl vs dml 
-grant permission
-What is Distributed DB
- 
+SELECT
+    c.customer_name,
+    SUM(o.total_amount) AS cumulative_order_amount
+FROM
+    Customers c
+JOIN
+    Orders o ON c.customer_id = o.customer_id
+GROUP BY
+    c.customer_id, c.customer_name
+ORDER BY
+    cumulative_order_amount DESC
+LIMIT 3;
+
+
+• coalesce function : Returns first non-NULL value from a list of expressions. eg - SELECT COALESCE(ProductName, Description, 'N/A') AS DisplayName
+FROM Products;
+explanation : 
+If ProductName is not NULL, DisplayName will be ProductName.
+If ProductName is NULL but Description is not NULL, DisplayName will be Description.
+If both ProductName and Description are NULL, DisplayName will be 'N/A'.
+
+
+
+• internal working of index in sql :
+SQL indexes store pointers to table rows in B-Tree or Hash structure.
+i.Helps search without scanning entire table:
+ii.Query uses indexed column
+iii.Database navigates B-Tree to locate row quickly
+iv.Reduces I/O operations
+Types of Indexes: Clustered Index, Non-Clustered Index
+
+
+• ddl vs dml :
+Feature      	DDL (Data Definition Language)                     	DML (Data Manipulation Language)
+Purpose	      Define/modify structure	                            Insert, update, delete data
+Commands	     CREATE, ALTER, DROP	                                INSERT, UPDATE, DELETE, MERGE
+Transaction	  Auto commit / Non-rollbackable	                     Can be rolled back
+
+• grant permission : GRANT gives privileges to users/roles. eg - GRANT SELECT, INSERT, UPDATE ON employee TO user1;
+
+
+• What is Distributed DB : Database where data is stored across multiple physical locations or servers, but appears as a single database to the user.
+Benefits: Scalability, high availability, fault tolerance
+Example: Apache Cassandra, Google Spanner
+
+
 DSA:
  
 •	Sort employees by salary and name using stream API
+List<Employee> sortedEmployees = employees.stream()
+    .sorted(Comparator.comparing(Employee::getSalary)
+                      .thenComparing(Employee::getName))
+    .collect(Collectors.toList());
+
+
+
 •	Create Java class, Filter out the unique elements from list using Java8
+
+
+
 •	Stream API - Remove duplicate in list
+List<Integer> uniqueNumbers = numbers.stream()
+                                     .distinct()
+                                     .collect(Collectors.toList());
+
+
+
+
+
 •	First non-repetitive character in String
+Optional<Character> firstNonRepeat = str.chars()
+    .mapToObj(c -> (char)c)
+    .filter(c -> Collections.frequency(
+        str.chars().mapToObj(ch -> (char)ch).collect(Collectors.toList()), c) == 1)
+    .findFirst();
+
+firstNonRepeat.ifPresent(System.out::println);
+
+
+
+
+
+
 •	Find the of the non repeated element from the list using java8 features.
+List<Integer> list = Arrays.asList(1,2,2,3,4,4,5);
+Optional<Integer> nonRepeated = list.stream()
+    .filter(i -> Collections.frequency(list, i) == 1)
+    .findFirst();
+
+
+ Map<T, Long> countMap = list.stream()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+        // Filter elements where the count is 1 (non-repeated) and collect them into a new list
+        return list.stream()
+                .filter(element -> countMap.get(element) == 1)
+                .collect(Collectors.toList());
+
+
+
+
+
 •	There are multi store buildings. Some gap was there between them. Imagine 7th store building, Four store building next to each other.
 When it rains water get accumulated. Calculate the water accumulated between the building.
- 
+public static int trapRainWater(int[] height) {
+    int n = height.length;
+    int[] leftMax = new int[n];
+    int[] rightMax = new int[n];
+    
+    leftMax[0] = height[0];
+    for (int i=1; i<n; i++) leftMax[i] = Math.max(leftMax[i-1], height[i]);
+    
+    rightMax[n-1] = height[n-1];
+    for (int i=n-2; i>=0; i--) rightMax[i] = Math.max(rightMax[i+1], height[i]);
+    
+    int water = 0;
+    for (int i=0; i<n; i++)
+        water += Math.min(leftMax[i], rightMax[i]) - height[i];
+    
+    return water;
+}
+
+
+
+
+
 •	Given list of stock prices of one week. Want to get when will be best day to buy and sell stock in that week and return profit gained
+public static int maxProfit(int[] prices) {
+    int minPrice = Integer.MAX_VALUE;
+    int maxProfit = 0;
+    for (int price : prices) {
+        minPrice = Math.min(minPrice, price);
+        maxProfit = Math.max(maxProfit, price - minPrice);
+    }
+    return maxProfit;
+}
+
+
+
 •	Frequency of longest common sub-string in a given string.
+for (int i = 1; i <= n; i++) {
+            for (int j = i + 1; j <= n; j++) { // Start j from i+1 to compare non-overlapping parts
+                if (s.charAt(i - 1) == s.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                    if (dp[i][j] > maxLength) {
+                        maxLength = dp[i][j];
+                        endIndex = i; // Store the end index of the longest common substring in the first occurrence
+                    }
+                } else {
+                    dp[i][j] = 0;
+                }
+            }
+        }
+
+
+
 •	palindromic string( a sentence just ignore special characters and numbers and spaces)
+public static boolean isPalindrome(String s) {
+    s = s.replaceAll("[^a-zA-Z]", "").toLowerCase();
+    return s.equals(new StringBuilder(s).reverse().toString());
+}
+
+
+
+
 •	Square of a number without using loop, existing function, multiplication
-•	kth largest element in array (heap) 
+public static int square(int n) {
+    if (n == 0) return 0;
+    if (n > 0) return square(n-1) + n + n -1; // recursive approach using sum of odd numbers
+    return square(-n); // handle negative
+}
+
+
+
+
+
+•	kth largest element in array (heap)
+PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+for (int num : arr) {
+    minHeap.offer(num);
+    if (minHeap.size() > k) minHeap.poll();
+}
+return minHeap.peek();
+
+
+
+
+
 •	balanced paranthesis (Stack)
+public static boolean isBalanced(String s) {
+    Stack<Character> stack = new Stack<>();
+    for (char c : s.toCharArray()) {
+        if (c=='(') stack.push(c);
+        else if (c==')') {
+            if (stack.isEmpty()) return false;
+            stack.pop();
+        }
+    }
+    return stack.isEmpty();
+}
+
+
+
+
+
+
 •	Longest substring without repeating characters in a string, find repeating substrings in a string
+        public static String longestSubstringWithoutRepeat(String s) {
+        Map<Character, Integer> map = new HashMap<>();
+        int start = 0, maxLen = 0, startIndex = 0;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            // If character is repeated, move start right after its last occurrence
+            if (map.containsKey(c)) {
+                start = Math.max(start, map.get(c) + 1);
+            }
+
+            map.put(c, i);
+
+            if (i - start + 1 > maxLen) {
+                maxLen = i - start + 1;
+                startIndex = start;
+            }
+        }
+
+        // Return the actual substring (not just length)
+        return s.substring(startIndex, startIndex + maxLen);
+    }
+
+
+
+public static Set<String> findRepeatingSubstrings(String s) {
+        Set<String> seen = new HashSet<>();
+        Set<String> duplicates = new HashSet<>();
+
+        for (int i = 0; i < s.length(); i++) {
+            for (int j = i + 1; j <= s.length(); j++) {
+                String sub = s.substring(i, j);
+                if (!seen.add(sub)) {
+                    duplicates.add(sub);
+                }
+            }
+        }
+        return duplicates;
+    }
+
+
+
+
+
+
 •	Find the missing elements in array start from 1 to the max element present.
+  // 1. Find the maximum element in the array
+        int maxElement = Arrays.stream(arr).max().orElse(0);
+// 2. Convert the array into a Set for efficient lookup
+        Set<Integer> presentElements = Arrays.stream(arr).boxed().collect(Collectors.toSet());
+
+        // 3. Generate a stream of integers from 1 to maxElement
+        // 4. Filter out elements that are present in the set
+        // 5. Collect the missing elements into a List
+        return IntStream.rangeClosed(1, maxElement)
+                .filter(i -> !presentElements.contains(i))
+                .boxed()
+                .collect(Collectors.toList());
+    }
+
+
+
+
 •	Out of two list find the numbers which are not common in both the list.
+      List<Integer> list1 = Arrays.asList(1,2,3,4);
+      List<Integer> list2 = Arrays.asList(3,4,5,6);
+List<Integer> diff = Stream.concat(
+        list1.stream().filter(x -> !list2.contains(x)),
+        list2.stream().filter(x -> !list1.contains(x))
+    ).collect(Collectors.toList());
 
