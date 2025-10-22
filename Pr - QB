@@ -1,0 +1,208 @@
+Project:
+
+•	Give a brief about your recent project and your roles and responsibilities in it
+•	Brief discussion about project - APIs, design, inter service calls, DB design, Protocols, explain the system design of the project  
+•	Which build tool was used in previous project
+•	Use of Maven and pom.xml
+•	What is transitive dependency
+•	if 2 dependency are there and both need common 3rd dependency of different version, and if I want a dependency of particular version so how to do it
+•	what is plugin in maven
+•	Why do you need DI / IOC in your application
+•	API Gateway
+•	Service discovery
+•	Load balancing - why and where
+•	Microservice intercommunication 
+•	Microsrvice External comunication 
+•	circuit breaker 
+•	what will happen if microservice A is reaching out to another B and Failure point at B occurs
+•	what is better for microserce to use diffrent db or a single db accross
+•	How transaction works in distributed system ( across multiple microservice)
+•	If your website is slow, how would you approach to this
+•	microservices - fault tolerance
+•	service configuration in aws or linux
+ 
+Java:
+ 
+•	new features of java 9 to 17
+•	Exceptions and Exception handling - custom exception
+•	Singelton Design pattern.
+•	Reflection - how to load a class using reflection
+•	solid principles
+•	Difference between StringBuilder and String
+•	When would you use a StringBuilder vs String and vice versa
+•	For String manipulation in a for loop we would use a String or StringBuilder
+•	Difference between StringBuilder and StringBuffer
+•	What is a Garbage Collector
+•	How does a Garbage Collection work in Java
+•	Java memory management for objects created
+•	Common mistakes done by developers due to which object will not get garbage collected in java.
+•	Multiple payment options (credit card, debit card, upi) in front end, which design pattern to implement in the backend
+ 
+ 
+Collections:
+ 
+•	What is the concept of collections, such as the Map interface and its classes like HashMap and ConcurrentHashMap?
+•	Internal working of hash map OR design a custom hashmap
+•	Hash map default capacity and load factor
+•	collections- HashMap, concurrent HashMaps, SynchronizedHashMap, HashSet and lists 
+•	Difference between HashMap and Hashtable
+•	Are Hashtable and HashMap synchronized
+•	ConcurrentHashMap and SynchronizedHashMap
+•	What would happen when a value with a duplicate key is put in a HashMap
+•	equal and hashcode relationship in object 
+•	what will happen when we add the duplicate element to HashSet. Will it throw any exception?
+•	TreeSet - internal working
+•	Custom object as value in TreeSet
+ 
+OOPS:
+ 
+•	Object-Oriented Programming concepts 
+•	Difference between Abstract Class and Interface
+ 
+ 
+Multithreading:
+ 
+•	What is the difference between Runnable and Callable Functional Interface
+•	Does main thread will wait for the response of the call method
+•	Asynchronous Programming in Java
+•	Multithreading- Executor service, volatile, atomic, locks, semaphores
+•	Difference between synchronized and volatile
+•	Optimistic v/s pessimistic locks 
+•	callable and future 
+•	Thread. join()
+•	CompletableFuture. How many threads CompletableFuture leverages?
+ 
+ 
+JAVA 8:
+ 
+•	What is functional Interface
+•	Can functional Interface contain default methods
+•	What is the use of Functional interface
+•	What are the predefined Functional interfaces
+•	Lamba Expression 
+•	Functional Interface, Predicates
+•	Difference between map, filter and reduce in stream
+•	Default methods in an interface
+•	Difference between map and flatMap in Stream API
+•	Use of Optional in Java lambdas
+•	Why use Optional instead of any other type e.g. List etc
+•	Sort employees by salary and name using stream API
+•	Create Java class, Filter out the unique elements from list using Java8
+•	Stream API - Remove duplicate in list
+ 
+Unit Testing:
+ 
+•	JUnit 
+•	Junit annotations and definition
+•	setUp method
+ 
+ Spring Boot:
+•	Why did I use Spring Boot? What are its advantages and disadvantages?
+•	How Spring boot application starts
+•	What are REST APIs
+•	Use of @configuration annotation
+•	If I want to create a bean after few other beans, how to do it
+•	If I have a xml based configuration and I have to use it in spring boot project, how to use it
+•	How to add spring security in a project
+•	Benefits of JPA over JDBC
+•	Dependency Injection and Inversion of Control
+•	Annotations in spring
+•	Transaction management
+•	Spring JPA - why and where
+•	Configure JDBC
+•	Difference between Controller and Rest Controller
+•	Scope in spring
+•	How to monitor health of application
+•	Spring-  beans, rest template, controller advice
+•	Reactive programming
+•	Spring batch - why and where
+•	Spring Security
+•	Session management
+•	Transaction management across microservices
+•	JPA repository vs CRUD repository
+•	save method and Saveandflush method
+•	application configurations in spring boot
+•	write a post api 
+•	rest status code
+•	Structure of restController
+•	Header conntent type
+ 
+•	Springboot autoconfiguration, how microservice starts up, 
+ 
+Kafka:
+•	Kafka architecture
+ 
+AWS:
+•	Which AWS services did I work on?
+•	How are these services created – through the console or by using Terraform? Why or why not?
+•	How to find logs in kubernetes
+•	AWS s3, compute engine, AWS instance
+•	Describe your experience in working with the AWS cloud
+•	What were the AWS services you used
+•	How did you automate repetitive deployment
+•	Have you created AWS instances dynamically
+•	How is deployment done using Docker
+•	How do you orchestrate cloud instances using Kubernetes
+•	aws - iam roles, lambda, event driven architecture
+ 
+Scenario:
+Students: Name and List of subjects (List<Subject>).
+Subject: Subject name and Marks.
+Create 9 objects of students with different subjects and marks.
+Now, the expectation is to write a logic/method that should return the top 3 students for each subject.
+ 
+how to retrieve 100gb of data from db at once
+how to process 1 million record
+ 
+Database:
+ 
+//SQL query
+Employee ->employee_id, employee_name, salary, department_id
+Department-> deparment_id, department_name, location
+Q1)no of employees working in each department, location
+Q2)Top 5 highest paid employees from each department
+ 
+//Database question
+Different types of joins
+Use of self join
+Use of Indexing and partitioning
+ 
+Get 3rd highest salary
+Get duplicate names
+Inner join vs Outer Joins
+why indexing is imp and what criteria used for this
+ 
+Difference between Relational SQL and NoSQL databases like MongoDB
+ 
+Orders { Id, CustomerId, Amount }, Customer { Id, Name }
+• Write SQL Query to fetch all order IDs with their customer name
+• What are SQL Joins
+• Difference between Inner Join and Outer Join
+• Write SQL to find the top 3 purchasers by their cumulative order amount
+ 
+coalesce function
+internal working of index in sql
+ddl vs dml 
+grant permission
+What is Distributed DB
+ 
+DSA:
+ 
+•	Sort employees by salary and name using stream API
+•	Create Java class, Filter out the unique elements from list using Java8
+•	Stream API - Remove duplicate in list
+•	First non-repetitive character in String
+•	Find the of the non repeated element from the list using java8 features.
+•	There are multi store buildings. Some gap was there between them. Imagine 7th store building, Four store building next to each other.
+When it rains water get accumulated. Calculate the water accumulated between the building.
+ 
+•	Given list of stock prices of one week. Want to get when will be best day to buy and sell stock in that week and return profit gained
+•	Frequency of longest common sub-string in a given string.
+•	palindromic string( a sentence just ignore special characters and numbers and spaces)
+•	Square of a number without using loop, existing function, multiplication
+•	kth largest element in array (heap) 
+•	balanced paranthesis (Stack)
+•	Longest substring without repeating characters in a string, find repeating substrings in a string
+•	Find the missing elements in array start from 1 to the max element present.
+•	Out of two list find the numbers which are not common in both the list.
+
