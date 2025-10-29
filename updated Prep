@@ -218,8 +218,40 @@ In small applications like monolithic we can avoid using spring dev tools.
 Also it should not be used in production because it may impact the performance and security.
 
 
+Spring boot scheduling/CRONS
+Scheduers can be used in email notification, data cleanup, stock updaes, system health check, order processing
+Scheduling in Spring boot allows you to automate tasks at specific intervals or times.
+It helps in running background jobs without manual intervention.
+Without Scheduling, repetitive tasks must be triggered manually.
+
+To enable scheduling in your project you have to first enable @EnableScheduling in main class of your application.
+
+We use @Scheduled(fixedRate = 5000) over the method which we want to schedule it for scheduler(task).
+@Scheduled(fixedRate = 5000):: Start the method execution in every 5 sec so here overlap problem may occur due to 5 sec start time as method may take much time for a single call so we use fixedDelay.
+@Scheduled(fixedDelay = 5000):: After execution wait for 5 sec then start this method execution
+@Scheduled(initialDelay = 10000, fixedDelay = 5000):: after 10 sec it will start for 1st call then after that it will wait for 5 sec to start next call
+
+CRON Expression: By using cron expression we can have more precise scheduling like certain date, time, week, etc.
+syntax = @Scheduled(cron = * * * * * *) :: in cron we have 6 elements i.e { second(0-59), minute(0-59), hour(0-23), day of month(1-31), month(1-12), day of week(0-7)(Sunday=0 or 7) }
+There is a cron job maker website which helps us to make cron job as per our needs like weekly, hourly, etc
+
+Dynamic Scheduling :: dynamic scheduling is needed to update the cron dynamically.
+ThreadPoolTaskScheduler is a class provided and managed by Spring, which helps us to dynamically update the value in our cron expression or in our scheduler.
+ThreadPoolTaskScheduler is basically a multithreaded task scheduler, by using this we can run multiple task in parallel way
+
+
 caching(escache, reddish, haaslecast) =  @cacheable, @cachboot, @cachevict
 
+Spring boot uses concurrentHashMap to store cache data inside in memory cache.
+
+Redis is distributed cache.
+Redis stores the data in RAM in order to make it faster.
+We have to configure the redis in application.prop file otherwise our spring boot will connect to in memory cache and will store data in concurrentHashMap.
+In application.prop write =>  spring.cache.type = redis, spring.data.redis.host = localhost, spring.data.redis.port = 6379, spring.cache.cache-names=weather.
+In pom.xml add dependency => spring-boot-starter-data-redis
+In redis we store data in key value format.
+
+ 
 Types of Caching?
 2 types 
 	1.In Memory
