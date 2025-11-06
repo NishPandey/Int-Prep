@@ -240,6 +240,15 @@ ThreadPoolTaskScheduler is a class provided and managed by Spring, which helps u
 ThreadPoolTaskScheduler is basically a multithreaded task scheduler, by using this we can run multiple task in parallel way
 
 
+CasCasde types in JPA-
+CascadeType.PERSIST: When a parent entity is persisted (saved), all its associated child entities are also persisted. This ensures that new related entities are saved together.
+CascadeType.MERGE: When a parent entity is merged (updated or re-attached to the persistence context), all its associated child entities are also merged. This is useful for updating existing related entities.
+CascadeType.REMOVE: When a parent entity is removed (deleted), all its associated child entities are also removed. This maintains data integrity by deleting dependent entities.
+CascadeType.REFRESH: When a parent entity is refreshed (reloaded from the database), all its associated child entities are also refreshed. This ensures the latest state of related entities is loaded.
+CascadeType.DETACH: When a parent entity is detached from the persistence context, all its associated child entities are also detached. This makes them unmanaged by the EntityManager.
+CascadeType.ALL: This is a convenience option that cascades all of the above operations (PERSIST, MERGE, REMOVE, REFRESH, DETACH) to associated entities. It's a shorthand for applying all cascading behaviors.
+
+
 caching(escache, reddish, haaslecast) =  @cacheable, @cachboot, @cachevict
 
 Spring boot uses concurrentHashMap to store cache data inside in memory cache.
@@ -1123,6 +1132,10 @@ circuit brakers
 Explanation- As soon as any request is made it goes to API gateway there the load balancer will be there which will root all the request to different instances of microservices,  so through API gateway it goes to service discovery(eureka) and it roots the traffic to different instances, url of this instances is dynamically generated
 
 circuit braker pattern?
+1. Add Resilience4j dependencies in your pom.xml (for Maven) or build.gradle (for Gradle)
+2. Define the circuit breaker's behavior in your application.yml or application.properties file. This includes parameters like slidingWindowSize, failureRateThreshold, waitDurationInOpenState, and 						     permittedNumberOfCallsInHalfOpenState.
+3. Annotate the methods that make calls to external services with @CircuitBreaker. Specify the name of the circuit breaker instance defined in your configuration and optionally a fallbackMethod to execute when the circuit is open or a call fails.
+
 its used in microservice communication. if any microservice is down and is not able to communicate with other microservice so in this case circuit is broken so we use historic and using historic we write fallback method for microservices which is down to give service/reponse to other microservices
 The Circuit Breaker pattern typically operates in three main states: 
 	i.Closed (Happy): In this state it operates normally, allowing requests to flow through between services.
@@ -1137,7 +1150,7 @@ The Circuit Breaker pattern typically operates in three main states:
 			If trial requests succeed, indicating service recovery, transitions back to Closed state.
 			If trial requests fail, service issues persist.
 			May transition back to Open state or remain in Half-Open state for further evaluation.
-
+@CircuitBreaker(name = "backendA", fallbackMethod = "fallback") :: annotation is used over the method which can fail or u want to apply.
 
 How u handle fault tolerance in ur microservice architecture(Circuit breaker)?
 Circuit breaker pattern can be used to handle the fault tolerance
@@ -1160,7 +1173,47 @@ yes we can use message broker for passing messages like we can use a queue or Ap
 So in this case -> one microservice will continuously produce the messages and the other microservice will continuously read/consume the messages
 Also we have FinClient that can also be used to perform communication between microservices
 
+Feign Client pattern in Spring Boot for inter-service communication involves several steps:
+Declarative Approach: Feign allows you to define a client interface with methods that mirror the external service's API endpoints. Feign automatically generates the implementation to handle HTTP requests and responses.
+1. add spring-cloud-starter-openfeign dependency in your pom.xml (for Maven) or build.gradle (for Gradle).
+2. Annotate your main Spring Boot application class with @EnableFeignClients to enable Feign client functionality.
+3. Define the Feign Client Interface:
+Create an interface for your client, annotating it with @FeignClient. Specify the name (logical service ID for Eureka/Ribbon or a descriptive name) and optionally the url if not using a service registry.
+4. Use the Feign Client in Your Service:
+Autowire the Feign client interface into your service or controller and use its methods to make calls to the external service.
 
+Implementing the RestTemplate pattern in Spring Boot for HTTP communication:
+1. Configure RestTemplate as a Spring Bean:
+Define a RestTemplate bean in a configuration class or your main application class to allow for dependency injection.
+2. Inject and Use RestTemplate in Your Service:
+Inject the RestTemplate bean into your service class and use its methods to perform HTTP requests.
+ // Example: GET request
+        return restTemplate.getForObject(url, responseType);
+// Example: POST request
+        return restTemplate.postForObject(url, requestBody, responseType);
+		
+3. Error Handling:
+RestTemplate throws specific exceptions for different HTTP status codes (e.g., HttpClientErrorException for 4xx errors, HttpServerErrorException for 5xx errors)
+
+
+
+Hitting a URL in a microservices environment triggers a chain of events involving :
+an API Gateway(it can also handle cross-cutting concerns like authentication, rate limiting, and logging.), 
+service discovery, 
+load balancing, 
+and inter-service communication to locate the correct microservice, 
+process the request, 
+and return the result to the client.
+
+
+Service Discovery:
+The API Gateway (or the calling microservice, if direct communication occurs) needs to know the network location (IP address and port) of the target microservice. This is where service discovery comes into play.
+Service Registry: Microservices register themselves with a service registry (e.g., Eureka, Consul, etcd, Kubernetes' built-in service discovery) when they start up, providing their location and other metadata.
+Service Discovery Client: The API Gateway or calling microservice queries the service registry to find the available instances of the target microservice.
+
+
+
+	
 interservice communication in microservice(how 2 microservice communicate with each other?) -> 
 	1. sync(REst API (http(direct communication)), finclient (complex(multiple service intercommunication)), webclient(reactive programming(high concurrent application(share market data))) ) 
 	2. async -> 1. message broker(rabbit mq, kafka)- calling method does not wait for response and it just move after creating/producing data ; and 2. messages and events
